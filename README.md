@@ -1,2 +1,3 @@
-# rope
-Use PostgreSQL in server-side Swift
+# Rope
+
+Rope provides basic access to `PostgreSQL` around the `libpq` library.
