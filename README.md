@@ -1,6 +1,6 @@
 # Rope
 
-Rope provides basic access to `PostgreSQL` around the `libpq` library.
+Rope provides basic access to `PostgreSQL` in Swift around the `libpq` library.
 
 ## Contributing
 
