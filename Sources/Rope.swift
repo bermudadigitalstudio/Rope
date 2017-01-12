@@ -1,7 +1,7 @@
 #if os(Linux)
-    import RopeLinux
+    @_exported import RopeLinux
 #else
-    import RopeMacOS
+    @_exported import RopeMacOS
 #endif
 
 public enum RopeError: Error {
@@ -37,7 +37,11 @@ public final class Rope {
         return try Rope(host: host, port: port, dbName: dbName, user: user, password: password)
     }
     
-    public func execute() {
+    public func query(_ statement:String) {
+        
+    }
+    
+    public func query(statement:String, params:[Any]) {
         
     }
     
