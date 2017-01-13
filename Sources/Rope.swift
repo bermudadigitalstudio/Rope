@@ -6,6 +6,9 @@
 
 public enum RopeError: Error {
     case connectionFailed(message: String)
+    case emptyQuery
+    case invalidQuery(message: String)
+    case fatalError(message: String)
 }
 
 public final class Rope {
@@ -40,7 +43,25 @@ public final class Rope {
         self.conn = conn
     }
 
-    public func query(_ statement: String) {
+    public func query(_ statement: String) throws -> RopeResult? {
+        if statement.isEmpty {
+            throw RopeError.emptyQuery
+        }
+
+        guard let res = PQexec(self.conn, statement) else {
+            try failWithError(); return nil
+        }
+
+        switch PQresultStatus(res) {
+        case PGRES_COMMAND_OK, PGRES_TUPLES_OK:
+            return RopeResult(res)
+        case PGRES_FATAL_ERROR:
+            let message = String(cString: PQresultErrorMessage(res))
+            throw RopeError.fatalError(message: message)
+        default:
+            let message = String(cString: PQresultErrorMessage(res))
+            throw RopeError.invalidQuery(message: message)
+        }
     }
 
     public func query(statement: String, params: [Any]) {
