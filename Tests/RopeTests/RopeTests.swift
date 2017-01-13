@@ -8,25 +8,24 @@ final class RopeTests: XCTestCase {
 
         XCTAssertNotNil(conn)
     }
-    
+
     func testInvalidConnection() {
-        var conn: Rope? = nil
-        
+        var conn: Rope?
+
         do {
-            conn = try Rope.connect(host: "invalidHost", port: 1234, dbName: "invalidDatabaseName", user: "invalidUserName",  password: "")
+            conn = try Rope.connect(host: "invalidHost", port: 1234, dbName: "invalidDatabaseName", user: "invalidUserName", password: "")
             return
         } catch let error {
             XCTAssertNotNil(error)
             XCTAssertNil(conn)
         }
     }
-    
+
     func testClosedConnection() {
         let conn = try? Rope.connect(dbName: "johanneserhardt", user: "johanneserhardt", password: "")
         XCTAssertNotNil(conn)
-        
+
         try? conn!.close()
         XCTAssertFalse(conn!.connected)
     }
-
 }
