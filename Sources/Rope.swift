@@ -19,7 +19,18 @@ public final class Rope {
         return true
     }
     
-    public init(host:String, port:Int, dbName:String, user:String, password:String) throws {
+    deinit {
+        try? close()
+    }
+    
+    public static func connect(host:String = "localhost", port:Int = 5432, dbName:String, user:String, password:String) throws -> Rope {
+        let rope = Rope()
+        try rope.establishConnection(host: host, port: port, dbName: dbName, user: user, password: password)
+        
+        return rope
+    }
+    
+    private func establishConnection(host:String, port:Int, dbName:String, user:String, password:String) throws {
         let conn = PQsetdbLogin(host, String(port), "", "", dbName, user, password)
         
         guard PQstatus(conn) == CONNECTION_OK else {
@@ -27,14 +38,6 @@ public final class Rope {
         }
         
         self.conn = conn
-    }
-    
-    deinit {
-        try? close()
-    }
-    
-    public static func connect(host:String = "localhost", port:Int = 5432, dbName:String, user:String, password:String) throws -> Rope {
-        return try Rope(host: host, port: port, dbName: dbName, user: user, password: password)
     }
     
     public func query(_ statement:String) {
