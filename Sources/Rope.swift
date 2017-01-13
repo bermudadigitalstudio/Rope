@@ -46,7 +46,7 @@ public final class Rope {
     public func query(statement: String, params: [Any]) {
     }
 
-    public func close() throws {
+    private func close() throws {
         guard self.connected else {
             try failWithError(); return
         }
