@@ -2,11 +2,10 @@ import XCTest
 import Rope
 
 final class RopeQueryTests: XCTestCase {
-    
+
     func testEmptyQueryStatement() {
         let conn = try? Rope.connect(dbName: "johanneserhardt", user: "johanneserhardt", password: "")
         XCTAssertNotNil(conn)
-        
 
         XCTAssertThrowsError(try conn!.query(""))
     }
@@ -18,5 +17,12 @@ final class RopeQueryTests: XCTestCase {
         let res = try! conn!.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY, payload TEXT)")
         XCTAssertNotNil(res)
     }
-    
+
+    func testQueryIsertStatementWithParams() {
+        let conn = try? Rope.connect(dbName: "johanneserhardt", user: "johanneserhardt", password: "")
+        XCTAssertNotNil(conn)
+
+        let res = try! conn!.query(statement: "INSERT INTO rope (payload) VALUES($1)", params: ["Rope is awesome!"])
+        XCTAssertNotNil(res)
+    }
 }

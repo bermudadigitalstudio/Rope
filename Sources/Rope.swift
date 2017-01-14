@@ -44,14 +44,47 @@ public final class Rope {
     }
 
     public func query(_ statement: String) throws -> RopeResult? {
+        return try execQuery(statement: statement)
+    }
+
+    public func query(statement: String, params: [Any]) throws -> RopeResult? {
+        return try execQuery(statement: statement, params: params)
+    }
+    
+    private func execQuery(statement: String, params: [Any]? = nil) throws -> RopeResult? {
         if statement.isEmpty {
             throw RopeError.emptyQuery
         }
-
-        guard let res = PQexec(self.conn, statement) else {
+        
+        guard let params = params else {
+            guard let res = PQexec(self.conn, statement) else {
+                try failWithError(); return nil
+            }
+            
+            return RopeResult(res)
+        }
+        
+        let paramsCount = params.count
+        let values = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: paramsCount)
+        
+        defer {
+            values.deinitialize(count: paramsCount)
+            values.deallocate(capacity: paramsCount)
+        }
+        
+        var tempValues = [Array<UInt8>]()
+        for (idx, value) in params.enumerated() {
+            
+            let s = String(describing: value).utf8
+            
+            tempValues.append(Array<UInt8>(s) + [0])
+            values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
+        }
+        
+        guard let res = PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0)) else {
             try failWithError(); return nil
         }
-
+        
         switch PQresultStatus(res) {
         case PGRES_COMMAND_OK, PGRES_TUPLES_OK:
             return RopeResult(res)
@@ -62,9 +95,6 @@ public final class Rope {
             let message = String(cString: PQresultErrorMessage(res))
             throw RopeError.invalidQuery(message: message)
         }
-    }
-
-    public func query(statement: String, params: [Any]) {
     }
 
     private func close() throws {
