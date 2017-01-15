@@ -13,9 +13,4 @@ final class RopeConnectionTests: XCTestCase {
             try Rope.connect(host: "invalidHost", port: 1234, dbName: "invalidDatabaseName", user: "invalidUserName", password: "")
         )
     }
-
-    func testClosedConnection() {
-        let conn = try? Rope.connect(dbName: "johanneserhardt", user: "johanneserhardt", password: "")
-        XCTAssertNotNil(conn)
-    }
 }
