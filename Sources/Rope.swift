@@ -61,7 +61,7 @@ public final class Rope {
                 try failWithError(); return nil
             }
 
-            return RopeResult(res)
+            return try validateQueryResultStatus(res)
         }
 
         let paramsCount = params.count
@@ -85,6 +85,10 @@ public final class Rope {
             try failWithError(); return nil
         }
 
+        return try validateQueryResultStatus(res)
+    }
+
+    func validateQueryResultStatus(_ res: OpaquePointer) throws -> RopeResult {
         switch PQresultStatus(res) {
         case PGRES_COMMAND_OK, PGRES_TUPLES_OK:
             return RopeResult(res)

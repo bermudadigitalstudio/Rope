@@ -7,6 +7,10 @@
 public final class RopeResult {
 
     private(set) var res: OpaquePointer? = OpaquePointer(bitPattern: 0)
+    
+    public var numberOfRows: Int32 {
+        return PQntuples(self.res)
+    }
 
     init(_ res: OpaquePointer?) {
         self.res = res
