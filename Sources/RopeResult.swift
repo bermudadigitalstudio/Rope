@@ -6,7 +6,7 @@
 
 public enum RopeValueType: Int {
     case unsupported = -1, bool = 16, int64 = 20, int16 = 21, int32 = 23,
-                        text = 25, float = 700, double = 701, varchar = 1043
+        text = 25, float = 700, double = 701, varchar = 1043
 }
 
 public final class RopeResult {
