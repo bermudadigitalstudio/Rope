@@ -28,7 +28,7 @@ final class RopeQueryTests: XCTestCase {
         super.tearDown()
     }
 
-    func testEmptyQueryStatement() {
+    /*func testEmptyQueryStatement() {
         XCTAssertThrowsError(try conn!.query(""))
     }
 
@@ -73,7 +73,7 @@ final class RopeQueryTests: XCTestCase {
         rows = res?.rows()
         XCTAssertNotNil(rows)
         XCTAssertEqual(rows?.count, 2)
-    }
+    }*/
 
     func testQuerySelectRowTypes() {
         // insert 2 rows
@@ -129,12 +129,12 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertEqual(myDouble!, 456.789)
 
         // timestamp to int
-        let myTS = rows[0]["my_ts"] as? Float
-        XCTAssertGreaterThan(myTS!, 1484580752)
+        let myTS = rows[0]["my_ts"] as? Date
+        XCTAssertNotNil(myTS)
 
         // date to int
-        let myDate = rows[0]["my_date"] as? Int
-        XCTAssertGreaterThan(myDate!, 1484580752)
+        let myDate = rows[0]["my_date"] as? Date
+        XCTAssertNotNil(myDate)
 
         // conversion from integer to string returns nil
         let idString = rows[0]["id"] as? String
@@ -144,90 +144,6 @@ final class RopeQueryTests: XCTestCase {
         let idx = rows[0]["xid"] as? Int
         XCTAssertNil(idx)
     }
-
-    /*
-     func testQueryIsertStatementWithParams() {
-
-     var res = try! conn!.query("CREATE TABLE IF NOT EXISTS first_rope(id SERIAL PRIMARY KEY, payload TEXT)")
-
-     let dateStr = formatDate("HH:mm:ss.SSS")
-     let text = "Hello, I am text created at " + dateStr // + NSUUID().uuidString
-
-     res = try! conn!.query(statement: "INSERT INTO first_rope (payload) VALUES($1)", params: [text])
-     XCTAssertNotNil(res)
-     // TO BE CONTINUED ...
-
-     //if let res = res {
-     //    print(res)
-     //    }
-     }
-     */
-
-    /*
-     func testInvalidQueryStatement() {
-     XCTAssertThrowsError(
-     try conn!.query("CREATE TABLE IF NOT EXISTS second_rope(id SERIAL PRIMARY KEY, firstname VARCHAR(255) lastname VARCHAR(255))") // comma is missing
-     )
-     }
-
-     func testQueryInsertStatementWithSeveralParams() {
-     let res = try! conn!.query(statement: "INSERT INTO second_rope (firstname, lastname) VALUES($1,$2)", params: ["Johannes", "Erhardt"])
-     XCTAssertNotNil(res)
-     }
-
-     func testSelectQuery() {
-     var res = try! conn!.query(statement: "INSERT INTO second_rope (firstname, lastname) VALUES($1,$2)", params: ["Johannes", "Erhardt"])
-
-     res = try! conn!.query("SELECT * FROM second_rope ORDER BY id")
-     XCTAssertNotNil(res)
-
-     XCTAssertEqual(res?.rowsCount, 1)
-     }
-
-     func testGetField() {
-     var res = try! conn!.query(statement: "INSERT INTO second_rope (firstname, lastname) VALUES($1,$2)", params: ["Johannes", "Erhardt"])
-
-     res = try! conn!.query("SELECT * FROM second_rope ORDER BY id")
-     XCTAssertNotNil(res)
-
-     let rows = res?.rows()
-
-     XCTAssertNotNil(rows)
-     XCTAssertEqual(rows?.count, 1)
-     }
-
-     func testGetId() {
-     var res = try! conn!.query(statement: "INSERT INTO second_rope (firstname, lastname) VALUES($1,$2)", params: ["Johannes", "Erhardt"])
-
-     res = try! conn!.query("SELECT * FROM second_rope ORDER BY id")
-     XCTAssertNotNil(res)
-
-     let id = res?.row(0, columnName: "id") as? Int
-     XCTAssertEqual(id, 1)
-     }
-
-     func testGetFirstname() {
-     var res = try! conn!.query(statement: "INSERT INTO second_rope (firstname, lastname) VALUES($1,$2)", params: ["Johannes", "Erhardt"])
-
-     res = try! conn!.query("SELECT * FROM second_rope ORDER BY id")
-     XCTAssertNotNil(res)
-
-     let firstName = res?.row(0, columnName: "firstname") as? String
-     XCTAssertEqual(firstName, "Johannes")
-     }
-
-     func testGetLastname() {
-     var res = try! conn!.query(statement: "INSERT INTO second_rope (firstname, lastname) VALUES($1,$2)", params: ["Johannes", "Erhardt"])
-
-     res = try! conn!.query("SELECT * FROM second_rope ORDER BY id")
-     XCTAssertNotNil(res)
-
-     let row = res?.row(0)
-
-     let lastName = row?["lastname"] as? String
-     XCTAssertEqual(lastName, "Erhardt")
-     }
-     */
 }
 
 // HELPERS
