@@ -4,9 +4,18 @@ import Rope
 final class RopeQueryTests: XCTestCase {
 
     let creds = Secrets.DBTestCredentials()
+    var conn: Rope? // successfully established db connection
 
     override func setUp() {
         super.setUp()
+        // create connection
+        conn = try? Rope.connect(credentials: creds)
+        XCTAssertNotNil(conn)
+        guard let db = conn else { return }
+        var res = try! db.query("DROP TABLE IF EXISTS rope")
+        XCTAssertNotNil(res)
+        res = try! db.query("CREATE TABLE rope(id SERIAL PRIMARY KEY, payload TEXT)")
+        XCTAssertNotNil(res)
     }
 
     override func tearDown() {
@@ -14,17 +23,17 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testEmptyQueryStatement() {
-        let conn = try? Rope.connect(credentials: creds)
-        XCTAssertNotNil(conn)
-
         XCTAssertThrowsError(try conn!.query(""))
     }
 
-    func testQueryInsertStatement() {
-        let conn = try? Rope.connect(credentials: creds)
-        XCTAssertNotNil(conn)
+    func testBasicQueryStatement() {
+        // the following SQL should always work, even on empty databases
+        let res = try! conn!.query("SELECT version();")
+        XCTAssertNotNil(res)
+    }
 
-        let res = try! conn!.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY, payload TEXT)")
+    func testQueryInsertStatement() {
+        let res = try! conn!.query("INSERT INTO rope (payload) VALUES('foo')")
         XCTAssertNotNil(res)
     }
 
