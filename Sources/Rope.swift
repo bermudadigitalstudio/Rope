@@ -88,7 +88,7 @@ public final class Rope {
                 try failWithError(); return nil
             }
 
-            return RopeResult(res)
+            return try validateQueryResultStatus(res)
         }
 
         let paramsCount = params.count
@@ -108,11 +108,15 @@ public final class Rope {
             values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
         }
 
-        guard let res = PQexecParams(self.conn, statement, Int32(params.count), nil,
-                                     values, nil, nil, Int32(0)) else {
+        guard let res = PQexecParams(self.conn, statement, Int32(params.count),
+                                     nil, values, nil, nil, Int32(0)) else {
             try failWithError(); return nil
         }
 
+        return try validateQueryResultStatus(res)
+    }
+
+    func validateQueryResultStatus(_ res: OpaquePointer) throws -> RopeResult {
         switch PQresultStatus(res) {
         case PGRES_COMMAND_OK, PGRES_TUPLES_OK:
             return RopeResult(res)
