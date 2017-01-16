@@ -62,7 +62,7 @@ final class RopeQueryWithSeveralParamsTest: XCTestCase {
         res = try! conn!.query("SELECT * FROM second_rope ORDER BY id")
         XCTAssertNotNil(res)
 
-        let id = res?.row(0, columnName: "id") as? Int32
+        let id = res?.row(0, columnName: "id") as? Int
         XCTAssertEqual(id, 1)
     }
 

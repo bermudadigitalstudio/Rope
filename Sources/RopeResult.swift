@@ -86,16 +86,10 @@ public final class RopeResult {
         switch type {
         case .bool:
             return UnsafePointer<Bool>(OpaquePointer(value))
-        case .int64:
-            return Int64(stringValue)
-        case .int16:
-            return Int16(stringValue)
-        case .int32:
-            return Int32(stringValue)
-        case .float:
+        case .int16, .int32, .int64:
+            return Int(stringValue)
+        case .float, .double:
             return Float(stringValue)
-        case .double:
-            return Double(stringValue)
         case .text, .varchar:
             return String(cString: value)
         default:
