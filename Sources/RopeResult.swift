@@ -29,8 +29,8 @@ public final class RopeResult {
         try? close()
     }
 
-    public func rows() -> [Any?] {
-        var rows = [Any?]()
+    public func rows() -> [[String: Any?]] {
+        var rows = [[String: Any?]]()
 
         for rowIndex in 0 ..< rowsCount {
             let row = self.row(rowIndex)
@@ -40,27 +40,21 @@ public final class RopeResult {
         return rows
     }
 
-    public func row(_ rowIndex: Int) -> [String: Any?]? {
+    private func row(_ rowIndex: Int) -> [String: Any?] {
         var columns = [String: Any?]()
 
         for columnIndex in 0 ..< columnsCount {
             let idx = Int32(columnIndex)
 
-            let column = columnAt(rowIndex: Int32(rowIndex), columnIndex: idx)
+            guard let column = columnAt(rowIndex: Int32(rowIndex), columnIndex: idx) else {
+                continue
+            }
 
             let name = String(cString: PQfname(self.res, idx))
             columns[name] = column
         }
 
         return columns
-    }
-
-    public func row(_ rowIndex: Int, columnName: String) -> Any? {
-        guard let row = row(rowIndex), let column = row[columnName] else {
-            return nil
-        }
-
-        return column
     }
 
     private func columnAt(rowIndex: Int32, columnIndex: Int32) -> Any? {
