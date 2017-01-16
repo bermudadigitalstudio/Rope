@@ -4,7 +4,6 @@
     @_exported import RopeMacOS
 #endif
 
-
 public final class RopeResult {
 
     private(set) var res: OpaquePointer? = OpaquePointer(bitPattern: 0)
