@@ -53,12 +53,12 @@ public final class RopeResult {
 
         return columns
     }
-    
+
     public func row(_ rowIndex: Int, columnName: String) -> Any? {
         guard let row = row(rowIndex), let column = row[columnName] else {
             return nil
         }
-        
+
         return column
     }
 
@@ -76,7 +76,7 @@ public final class RopeResult {
 
     private func convert(value: UnsafeMutablePointer<Int8>, columnIndex: Int32) -> Any? {
         let oid = PQftype(self.res!, Int32(columnIndex))
-        
+
         guard let stringValue = String(validatingUTF8: value),
             let type = RopeValueType(rawValue: Int(oid))
         else {
