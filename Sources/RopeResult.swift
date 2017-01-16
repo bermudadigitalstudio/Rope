@@ -86,7 +86,7 @@ public final class RopeResult {
 
         switch type {
         case .bool:
-            return UnsafePointer<Bool>(OpaquePointer(value))
+            return String(cString: value) == "t"
         case .int16, .int32, .int64:
             return Int(stringValue)
         case .float, .double:
