@@ -2,7 +2,7 @@
 
 Rope provides basic access to `PostgreSQL` in Swift around the `libpq` library.
 
-# Example
+## Example
 
 ```swift
 
@@ -25,10 +25,17 @@ let res = try! db.query("SELECT version();")
 ...
 ```
 
+## Supported Value Types
 
-# Testing & Database Credentials
+* `smallint`, `integer`, and `bigint` are returned as `Int`
+* `real` and `double` precision are returned as `Float`
+* `char`, `varchar`, and `text` are returned as `String`
+* the `boolean` type is returned as `Bool`
+* `date`, `timestampt` are returned as `Date`
 
-Rope’s unit tests require a running Postgres 9.x database. 
+## Testing & Database Credentials
+
+Rope’s unit tests require a running Postgres 9.x database.
 
 Connection credentials are securely stored in `Tests/RopeTests/Secrets.swift` outside of Git. To get started, please create a copy of `Tests/RopeTests/SecretsExample.swift`, rename it to `Secrets.swift` and follow the further instructions from `SecretsExample.swift`.
 
