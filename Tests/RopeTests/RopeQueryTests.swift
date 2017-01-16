@@ -74,15 +74,29 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertNotNil(res)
         res = try! conn!.query("INSERT INTO rope (payload) VALUES('Rope is dope!')")
         XCTAssertNotNil(res)
+        
         // select the rows
         res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
         XCTAssertNotNil(res)
+        
         guard let selectRes = res, let rows = res?.rows() else { return }
         XCTAssertEqual(rows.count, 2)
-
-        let val = selectRes.row(0, columnName: "payload") as? String
+        
+        let row = selectRes.rows().first!
+        let val = row["payload"] as? String
+        
         XCTAssertNotNil(val)
         XCTAssertEqual(val!, "Rope is dope!")
+
+        //let val = selectRes.row(0, columnName: "payload") as? String
+        /*if let row = selectRes.rows().first as! [String: Any?] {
+            let val = row["payload"] as? String
+            XCTAssertNotNil(val)
+            XCTAssertEqual(val!, "Rope is dope!")
+        }*/
+        
+        
+        
         /*
          // DOES NOT WORK because row returns string?!?!
          val = selectRes.row(0, columnName: "id") as? Int
