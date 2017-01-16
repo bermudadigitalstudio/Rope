@@ -36,7 +36,7 @@ final class RopeQueryTests: XCTestCase {
             formatter.timeZone = TimeZone(abbreviation: timeZone)
         }
         formatter.dateFormat = dateFormat
-        
+
         let dateStr = formatter.string(from: Date())
         return dateStr
     }
