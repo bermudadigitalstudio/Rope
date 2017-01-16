@@ -15,8 +15,11 @@ final class RopeQueryTests: XCTestCase {
         var res = try! db.query("DROP TABLE IF EXISTS rope")
         XCTAssertNotNil(res)
         // create a table with different types as test, payload can be nil
-        var sql = "CREATE TABLE rope (id SERIAL PRIMARY KEY, payload TEXT, is_ok BOOLEAN default FALSE, "
-        sql += "my_date DATE default current_timestamp, my_ts TIMESTAMP default current_timestamp);"
+        var sql = "CREATE TABLE rope (id SERIAL PRIMARY KEY, my_text TEXT, my_bool BOOLEAN default FALSE"
+        sql += ", my_varchar VARCHAR(3) default 'abc', my_char CHAR(1) default 'x', my_null_text TEXT default null"
+        sql += ", my_real REAL default 123.456, my_double DOUBLE PRECISION default 456.789"
+        // sql += ", row_to_json(row(1,'foo'))"
+        sql += ", my_date DATE default current_timestamp, my_ts TIMESTAMP default current_timestamp);"
         res = try! db.query(sql)
         XCTAssertNotNil(res)
     }
@@ -31,7 +34,8 @@ final class RopeQueryTests: XCTestCase {
 
     func testInvalidQueryStatement() {
         XCTAssertThrowsError(
-            try conn!.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY, firstname VARCHAR(255) lastname VARCHAR(255))") // comma is missing
+            // comma is missing
+            try conn!.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY name TEXT))")
         )
     }
 
@@ -42,8 +46,9 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testQueryInsertStatement() {
-        let res = try! conn!.query("INSERT INTO rope (payload) VALUES('Rope is awesome!')")
+        let res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
         XCTAssertNotNil(res)
+        XCTAssertEqual(res?.rows().count, 0)
     }
 
     func testQuerySelectRows() {
@@ -55,11 +60,13 @@ final class RopeQueryTests: XCTestCase {
         var rows = res?.rows()
         XCTAssertNotNil(rows)
         XCTAssertEqual(rows?.count, 0)
+
         // insert 2 rows
-        res = try! conn!.query("INSERT INTO rope (payload) VALUES('Rope is awesome!')")
+        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
         XCTAssertNotNil(res)
-        res = try! conn!.query("INSERT INTO rope (payload) VALUES('Rope is dope!')")
+        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')")
         XCTAssertNotNil(res)
+
         // select the rows
         res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
         XCTAssertNotNil(res)
@@ -70,46 +77,72 @@ final class RopeQueryTests: XCTestCase {
 
     func testQuerySelectRowTypes() {
         // insert 2 rows
-        var res = try! conn!.query("INSERT INTO rope (payload) VALUES('Rope is awesome!')")
+        var res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
         XCTAssertNotNil(res)
-        res = try! conn!.query("INSERT INTO rope (payload) VALUES('Rope is dope!')")
+        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')")
         XCTAssertNotNil(res)
-        
+
         // select the rows
         res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
         XCTAssertNotNil(res)
-        
-        guard let selectRes = res, let rows = res?.rows() else { return }
+
+        guard let rows = res?.rows() else { return }
         XCTAssertEqual(rows.count, 2)
-        
-        let row = selectRes.rows().first!
-        let val = row["payload"] as? String
-        
-        XCTAssertNotNil(val)
-        XCTAssertEqual(val!, "Rope is dope!")
 
-        //let val = selectRes.row(0, columnName: "payload") as? String
-        /*if let row = selectRes.rows().first as! [String: Any?] {
-            let val = row["payload"] as? String
-            XCTAssertNotNil(val)
-            XCTAssertEqual(val!, "Rope is dope!")
-        }*/
-        
-        
-        
-        /*
-         // DOES NOT WORK because row returns string?!?!
-         val = selectRes.row(0, columnName: "id") as? Int
-         XCTAssertNotNil(val)
-         XCTAssertEqual(val!, 2)
-         */
+        // test the different types
+        ///////////////////////////
 
-        /*
-         let myTS = res?.row(0, columnName: "my_ts") as? Int
-         XCTAssertGreaterThan(myTS!, 1484574245)
-         */
+        // text to string
+        let myText = rows[0]["my_text"] as? String
+        XCTAssertEqual(myText!, "Rope is dope!")
 
-        // let firstRow = selectRes.row(0)
+        // serial to int
+        let id = rows[0]["id"] as? Int
+        XCTAssertEqual(id!, 2)
+
+        // check if order is correct
+        let idNextRow = rows[1]["id"] as? Int
+        XCTAssertEqual(idNextRow!, 1)
+
+        // boolean to bool
+        let isOk = rows[0]["my_bool"] as? Bool
+        XCTAssertFalse(isOk!)
+
+        // varchar to string
+        let myVarchar = rows[0]["my_varchar"] as? String
+        XCTAssertEqual(myVarchar!, "abc")
+
+        // char to string
+        let myChar = rows[0]["my_char"] as? String
+        XCTAssertEqual(myChar!, "x")
+
+        // null value of text to string
+        let myNullText = rows[0]["my_null_text"] as? String
+        XCTAssertEqual(myNullText, nil)
+
+        // real to float
+        let myReal = rows[0]["my_real"] as? Float
+        XCTAssertEqual(myReal!, 123.456)
+
+        // double to float
+        let myDouble = rows[0]["my_double"] as? Float
+        XCTAssertEqual(myDouble!, 456.789)
+
+        // timestamp to int
+        let myTS = rows[0]["my_ts"] as? Float
+        XCTAssertGreaterThan(myTS!, 1484580752)
+
+        // date to int
+        let myDate = rows[0]["my_date"] as? Int
+        XCTAssertGreaterThan(myDate!, 1484580752)
+
+        // conversion from integer to string returns nil
+        let idString = rows[0]["id"] as? String
+        XCTAssertNil(idString)
+
+        // a non-existing column is nil
+        let idx = rows[0]["xid"] as? Int
+        XCTAssertNil(idx)
     }
 
     /*
