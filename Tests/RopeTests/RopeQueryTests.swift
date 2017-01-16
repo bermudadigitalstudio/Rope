@@ -11,16 +11,19 @@ final class RopeQueryTests: XCTestCase {
         // create connection
         conn = try? Rope.connect(credentials: creds)
         XCTAssertNotNil(conn)
+
         guard let db = conn else { return }
         var res = try! db.query("DROP TABLE IF EXISTS rope")
         XCTAssertNotNil(res)
+
         // create a table with different types as test, payload can be nil
         var sql = "CREATE TABLE rope (id SERIAL PRIMARY KEY, my_text TEXT, my_bool BOOLEAN default FALSE"
         sql += ", my_varchar VARCHAR(3) default 'abc', my_char CHAR(1) default 'x', my_null_text TEXT default null"
         sql += ", my_real REAL default 123.456, my_double DOUBLE PRECISION default 456.789"
         // sql += ", row_to_json(row(1,'foo'))"
         sql += ", my_date DATE default current_timestamp, my_ts TIMESTAMP default current_timestamp);"
-        res = try! db.query(sql)
+
+        wres = try! db.query(sql)
         XCTAssertNotNil(res)
     }
 
@@ -28,7 +31,7 @@ final class RopeQueryTests: XCTestCase {
         super.tearDown()
     }
 
-    /*func testEmptyQueryStatement() {
+    func testEmptyQueryStatement() {
         XCTAssertThrowsError(try conn!.query(""))
     }
 
@@ -50,30 +53,6 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertNotNil(res)
         XCTAssertEqual(res?.rows().count, 0)
     }
-
-    func testQuerySelectRows() {
-        // guard let db = conn else { return }
-        // we are enforcing here to get a crash during test if needed
-        // in production you should be less aggressive!
-        var res = try! conn!.query("SELECT * FROM rope ORDER BY id")
-        XCTAssertNotNil(res)
-        var rows = res?.rows()
-        XCTAssertNotNil(rows)
-        XCTAssertEqual(rows?.count, 0)
-
-        // insert 2 rows
-        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
-        XCTAssertNotNil(res)
-        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')")
-        XCTAssertNotNil(res)
-
-        // select the rows
-        res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
-        XCTAssertNotNil(res)
-        rows = res?.rows()
-        XCTAssertNotNil(rows)
-        XCTAssertEqual(rows?.count, 2)
-    }*/
 
     func testQuerySelectRowTypes() {
         // insert 2 rows

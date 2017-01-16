@@ -95,7 +95,7 @@ public final class RopeResult {
             return nil
         }
     }
-    
+
     private func convertDateValue(_ dateString: String, valueType: RopeValueType) -> Date? {
         let (format, respectUTC) = { (valueType: RopeValueType) -> (String, Bool) in
             switch valueType {
@@ -105,13 +105,13 @@ public final class RopeResult {
                 return ("yyyy-MM-dd", false)
             }
         }(valueType)
-        
+
         let formatter = DateFormatter()
         if respectUTC {
             formatter.timeZone = TimeZone(abbreviation: "UTC")
         }
         formatter.dateFormat = format
-        
+
         return formatter.date(from: dateString)
     }
 
