@@ -11,6 +11,15 @@ public enum RopeError: Error {
     case fatalError(message: String)
 }
 
+/// connection details to database
+public protocol RopeCredentials {
+    var host: String { get }
+    var dbName: String { get }
+    var user: String { get }
+    var password: String { get }
+    var port: Int { get }
+}
+
 public final class Rope {
 
     private(set) var conn: OpaquePointer!
@@ -26,6 +35,19 @@ public final class Rope {
         try? close()
     }
 
+    /// connect to database using RopeCredentials struct
+    public static func connect(credentials: RopeCredentials) throws -> Rope {
+        let rope = Rope()
+        try rope.establishConnection(host: credentials.host,
+                                     port: credentials.port,
+                                     dbName: credentials.dbName,
+                                     user: credentials.user,
+                                     password: credentials.password)
+
+        return rope
+    }
+
+    /// connect to database using credential connection arguments
     public static func connect(host: String = "localhost", port: Int = 5432, dbName: String,
                                user: String, password: String) throws -> Rope {
         let rope = Rope()
@@ -46,10 +68,12 @@ public final class Rope {
         self.conn = conn
     }
 
+    /// query database with SQL statement
     public func query(_ statement: String) throws -> RopeResult? {
         return try execQuery(statement: statement)
     }
 
+    /// query database with SQL statement, use $1, $2, etc. for params in SQL
     public func query(statement: String, params: [Any]) throws -> RopeResult? {
         return try execQuery(statement: statement, params: params)
     }
