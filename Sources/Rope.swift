@@ -26,14 +26,17 @@ public final class Rope {
         try? close()
     }
 
-    public static func connect(host: String = "localhost", port: Int = 5432, dbName: String, user: String, password: String) throws -> Rope {
+    public static func connect(host: String = "localhost", port: Int = 5432, dbName: String,
+                               user: String, password: String) throws -> Rope {
         let rope = Rope()
-        try rope.establishConnection(host: host, port: port, dbName: dbName, user: user, password: password)
+        try rope.establishConnection(host: host, port: port, dbName: dbName,
+                                     user: user, password: password)
 
         return rope
     }
 
-    private func establishConnection(host: String, port: Int, dbName: String, user: String, password: String) throws {
+    private func establishConnection(host: String, port: Int, dbName: String,
+                                     user: String, password: String) throws {
         let conn = PQsetdbLogin(host, String(port), "", "", dbName, user, password)
 
         guard PQstatus(conn) == CONNECTION_OK else {
@@ -81,7 +84,8 @@ public final class Rope {
             values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
         }
 
-        guard let res = PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0)) else {
+        guard let res = PQexecParams(self.conn, statement, Int32(params.count), nil,
+                                     values, nil, nil, Int32(0)) else {
             try failWithError(); return nil
         }
 
