@@ -5,8 +5,7 @@
 #endif
 
 public enum RopeValueType: Int {
-    case unsupported = -1, bool = 16, int64 = 20, int16 = 21, int32 = 23,
-        text = 25, float = 700, double = 701, varchar = 1043
+    case unsupported = -1, bool = 16, int64 = 20, int16 = 21, int32 = 23, text = 25, float = 700, double = 701, char = 1042, varchar = 1043
 }
 
 public final class RopeResult {
@@ -85,8 +84,8 @@ public final class RopeResult {
             return Int(stringValue)
         case .float, .double:
             return Float(stringValue)
-        case .text, .varchar:
-            return String(cString: value)
+        case .text, .char, .varchar:
+            return stringValue
         default:
             return nil
         }
