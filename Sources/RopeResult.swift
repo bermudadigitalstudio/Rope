@@ -12,18 +12,18 @@ public enum RopeValueType: Int {
 
 public final class RopeResult {
 
-    private(set) var res: OpaquePointer? = OpaquePointer(bitPattern: 0)
+    private(set) var result: OpaquePointer? = OpaquePointer(bitPattern: 0)
 
     public var rowsCount: Int {
-        return Int(PQntuples(self.res))
+        return Int(PQntuples(self.result))
     }
 
     public var columnsCount: Int {
-        return Int(PQnfields(self.res))
+        return Int(PQnfields(self.result))
     }
 
     init(_ res: OpaquePointer?) {
-        self.res = res
+        self.result = res
     }
 
     deinit {
@@ -51,7 +51,7 @@ public final class RopeResult {
                 continue
             }
 
-            let name = String(cString: PQfname(self.res, idx))
+            let name = String(cString: PQfname(self.result, idx))
             columns[name] = column
         }
 
@@ -59,11 +59,11 @@ public final class RopeResult {
     }
 
     private func columnAt(rowIndex: Int32, columnIndex: Int32) -> Any? {
-        guard PQgetisnull(self.res, rowIndex, columnIndex) == 0 else {
+        guard PQgetisnull(self.result, rowIndex, columnIndex) == 0 else {
             return nil
         }
 
-        guard let value = PQgetvalue(self.res, rowIndex, columnIndex) else {
+        guard let value = PQgetvalue(self.result, rowIndex, columnIndex) else {
             return nil
         }
 
@@ -71,7 +71,7 @@ public final class RopeResult {
     }
 
     private func convertValue(value: UnsafeMutablePointer<Int8>, columnIndex: Int32) -> Any? {
-        let oid = PQftype(self.res!, Int32(columnIndex))
+        let oid = PQftype(self.result!, Int32(columnIndex))
 
         guard let stringValue = String(validatingUTF8: value),
             let type = RopeValueType(rawValue: Int(oid))
@@ -116,11 +116,11 @@ public final class RopeResult {
     }
 
     private func close() throws {
-        guard let res = res else {
+        guard let res = result else {
             return
         }
 
         PQclear(res)
-        self.res = OpaquePointer(bitPattern: 0)
+        self.result = OpaquePointer(bitPattern: 0)
     }
 }
