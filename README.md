@@ -37,13 +37,21 @@ Please see the `RopeTestCredentials.swift` file.
 
 #### Using XCode
 
-Please enter the `Edit Scheme`:
+Please enter the following info via `Edit Scheme` > `Arguements` using `Environment Variables` or `Arguments Passend On Launch`:
 
 * `DATABASE_HOST`
 * `DATABASE_PORT`
 * `DATABASE_NAME`
 * `DATABASE_USER`
 * `DATABASE_PASSWORD`
+
+#### Using CLI
+
+```
+swift build DATABASE_HOST=host DATABASE_PORT=port DATABASE_NAME=dbname DATABASE_USER=user DATABASE_PASSWORD=pass
+
+swift test
+```
 
 Please also see the unit tests about how to use `RopeCredentials` to establish a connection.
 
