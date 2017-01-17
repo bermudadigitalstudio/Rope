@@ -3,13 +3,15 @@ import Rope
 
 final class RopeQueryTests: XCTestCase {
 
-    let creds = Secrets.DBTestCredentials()
+    let creds = TestCredentials.getCredentials()
+
     var conn: Rope? // auto-tested optional db connection
 
     override func setUp() {
         super.setUp()
+
         // create connection
-        conn = try? Rope.connect(credentials: creds)
+        conn = try? Rope.connect(credentials: creds!)
         XCTAssertNotNil(conn)
 
         guard let db = conn else { return }

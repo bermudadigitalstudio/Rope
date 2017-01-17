@@ -12,12 +12,21 @@ public enum RopeError: Error {
 }
 
 /// connection details to database
-public protocol RopeCredentials {
-    var host: String { get }
-    var dbName: String { get }
-    var user: String { get }
-    var password: String { get }
-    var port: Int { get }
+public struct RopeCredentials {
+
+    private(set) public var host: String
+    private(set) public var port: Int
+    private(set) public var dbName: String
+    private(set) public var user: String
+    private(set) public var password: String
+
+    public init(host: String, port: Int, dbName: String, user: String, password: String) {
+        self.host = host
+        self.port = port
+        self.dbName = dbName
+        self.user = user
+        self.password = password
+    }
 }
 
 public final class Rope {
@@ -38,27 +47,20 @@ public final class Rope {
     /// connect to database using RopeCredentials struct
     public static func connect(credentials: RopeCredentials) throws -> Rope {
         let rope = Rope()
-        try rope.establishConnection(host: credentials.host,
-                                     port: credentials.port,
-                                     dbName: credentials.dbName,
-                                     user: credentials.user,
-                                     password: credentials.password)
+        try rope.establishConnection(host: credentials.host, port: credentials.port, dbName: credentials.dbName, user: credentials.user, password: credentials.password)
 
         return rope
     }
 
     /// connect to database using credential connection arguments
-    public static func connect(host: String = "localhost", port: Int = 5432, dbName: String,
-                               user: String, password: String) throws -> Rope {
+    public static func connect(host: String = "localhost", port: Int = 5432, dbName: String, user: String, password: String) throws -> Rope {
         let rope = Rope()
-        try rope.establishConnection(host: host, port: port, dbName: dbName,
-                                     user: user, password: password)
+        try rope.establishConnection(host: host, port: port, dbName: dbName, user: user, password: password)
 
         return rope
     }
 
-    private func establishConnection(host: String, port: Int, dbName: String,
-                                     user: String, password: String) throws {
+    private func establishConnection(host: String, port: Int, dbName: String, user: String, password: String) throws {
         let conn = PQsetdbLogin(host, String(port), "", "", dbName, user, password)
 
         guard PQstatus(conn) == CONNECTION_OK else {
