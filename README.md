@@ -47,7 +47,7 @@ Please enter the following info via `Edit Scheme` > `Arguements` using `Environm
 
 #### Using CLI
 
-```swift
+```
 swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE_NAME=mydatabase_dbname DATABASE_USER=mydatabase_user DATABASE_PASSWORD=mydatabase_very_secure_password
 ```
 
