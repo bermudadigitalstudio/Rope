@@ -16,8 +16,8 @@ guard let db = conn else { return }
 // run query
 let res = try! db.query("SELECT version();")
 
-// LATER: show result data
-...
+// show result data
+let myText = rows[0]["my_text"] as? String
 ```
 
 ## Postgres Types to Swift Conversion
