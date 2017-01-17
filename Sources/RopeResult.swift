@@ -89,14 +89,14 @@ public final class RopeResult {
         case .text, .char, .varchar:
             return stringValue
         case .date, .timestamp:
-            let date = convertDateValue(stringValue, valueType: type)
+            let date = convert(dateValue: stringValue, valueType: type)
             return date
         default:
             return nil
         }
     }
 
-    private func convertDateValue(_ dateString: String, valueType: RopeValueType) -> Date? {
+    private func convert(dateValue: String, valueType: RopeValueType) -> Date? {
         let (format, respectUTC) = { (valueType: RopeValueType) -> (String, Bool) in
             switch valueType {
             case .timestamp:
@@ -112,7 +112,7 @@ public final class RopeResult {
         }
         formatter.dateFormat = format
 
-        return formatter.date(from: dateString)
+        return formatter.date(from: dateValue)
     }
 
     private func close() throws {
