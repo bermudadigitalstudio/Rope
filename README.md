@@ -37,7 +37,18 @@ let res = try! db.query("SELECT version();")
 
 Rope’s unit tests require a running Postgres 9.x database.
 
-Connection credentials are securely stored in `Tests/RopeTests/Secrets.swift` outside of Git. To get started, please create a copy of `Tests/RopeTests/SecretsExample.swift`, rename it to `Secrets.swift` and follow the further instructions from `SecretsExample.swift`.
+You can easily provide the database credentials via environment variables.
+Please see the `RopeTestCredentials.swift` file.
+
+#### Using XCode
+
+Please enter the `Edit Scheme`:
+
+* `DATABASE_HOST`
+* `DATABASE_PORT`
+* `DATABASE_NAME`
+* `DATABASE_USER`
+* `DATABASE_PASSWORD`
 
 Please also see the unit tests about how to use `RopeCredentials` to establish a connection.
 
