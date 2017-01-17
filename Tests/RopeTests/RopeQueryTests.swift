@@ -21,9 +21,10 @@ final class RopeQueryTests: XCTestCase {
         sql += ", my_varchar VARCHAR(3) default 'abc', my_char CHAR(1) default 'x', my_null_text TEXT default null"
         sql += ", my_real REAL default 123.456, my_double DOUBLE PRECISION default 456.789"
         // sql += ", row_to_json(row(1,'foo'))"
-        sql += ", my_date DATE default current_timestamp, my_ts TIMESTAMP default current_timestamp);"
-
-        wres = try! db.query(sql)
+        sql += ", my_date DATE default (now() at time zone 'utc')"
+        sql += ", my_ts TIMESTAMP default (now() at time zone 'utc')"
+        sql += ");"
+        res = try! db.query(sql)
         XCTAssertNotNil(res)
     }
 
@@ -107,13 +108,29 @@ final class RopeQueryTests: XCTestCase {
         let myDouble = rows[0]["my_double"] as? Float
         XCTAssertEqual(myDouble!, 456.789)
 
-        // timestamp to int
+        // timestamp to Date
         let myTS = rows[0]["my_ts"] as? Date
         XCTAssertNotNil(myTS)
 
-        // date to int
+        // date to Date
         let myDate = rows[0]["my_date"] as? Date
         XCTAssertNotNil(myDate)
+
+        // check if date (is 0:00) and timestamp are correct are correct
+        let now = Date()
+        /*
+         //let yesterday = Date().addingTimeInterval(-86400)
+         print(formatDate(now, format: "YYY-mm-dd HH:mm"))
+         print(formatDate(yesterday, format: "YYY-mm-dd HH:mm"))
+         print(formatDate(myTS!, format: "YYY-mm-dd HH:mm"))
+         print(formatDate(myDate!, format: "YYY-mm-dd HH:mm"))
+         */
+        XCTAssertEqual(formatDate(myTS!, format: "YYY-mm-dd HH:mm"),
+                       formatDate(now, format: "YYY-mm-dd HH:mm"))
+
+        let myDateDay = Calendar.current.component(.day, from: myDate!)
+        let nowDay = Calendar.current.component(.day, from: now)
+        XCTAssertEqual(myDateDay, nowDay)
 
         // conversion from integer to string returns nil
         let idString = rows[0]["id"] as? String
@@ -129,16 +146,16 @@ final class RopeQueryTests: XCTestCase {
 
 fileprivate let formatter = DateFormatter()
 
-/// returns a formatted date string
-/// optionally in a given abbreviated timezone like "UTC"
-fileprivate func formatDate(_ dateFormat: String, timeZone: String = "") -> String {
+/// returns a formatted date string of a given date
+/// on default it uses the abbreviated timezone "UTC"
+fileprivate func formatDate(_ date: Date, format: String, timezone: String = "UTC") -> String {
     let formatter = DateFormatter()
 
-    if !timeZone.isEmpty {
-        formatter.timeZone = TimeZone(abbreviation: timeZone)
+    if !timezone.isEmpty {
+        formatter.timeZone = TimeZone(abbreviation: timezone)
     }
-    formatter.dateFormat = dateFormat
+    formatter.dateFormat = format
 
-    let dateStr = formatter.string(from: Date())
+    let dateStr = formatter.string(from: date)
     return dateStr
 }
