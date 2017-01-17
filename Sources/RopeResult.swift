@@ -67,10 +67,10 @@ public final class RopeResult {
             return nil
         }
 
-        return convertValue(value: value, columnIndex: columnIndex)
+        return convert(value: value, columnIndex: columnIndex)
     }
 
-    private func convertValue(value: UnsafeMutablePointer<Int8>, columnIndex: Int32) -> Any? {
+    private func convert(value: UnsafeMutablePointer<Int8>, columnIndex: Int32) -> Any? {
         let oid = PQftype(self.result!, Int32(columnIndex))
 
         guard let stringValue = String(validatingUTF8: value),
