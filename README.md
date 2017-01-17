@@ -48,7 +48,7 @@ Please enter the following info via `Edit Scheme` > `Arguements` using `Environm
 #### Using CLI
 
 ```
-swift build DATABASE_HOST=host DATABASE_PORT=port DATABASE_NAME=dbname DATABASE_USER=user DATABASE_PASSWORD=pass
+swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE_NAME=mydatabase_dbname DATABASE_USER=mydatabase_user DATABASE_PASSWORD=mydatabase_very_secure_password
 ```
 
 To run tests simple type `swift test` in your CLI.
