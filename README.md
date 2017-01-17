@@ -33,7 +33,7 @@ let res = try! db.query("SELECT version();")
 Rope’s unit tests require a running Postgres 9.x database.
 
 You can easily provide the database credentials via environment variables.
-Please see the `RopeTestCredentials.swift` file.
+Please see the `RopeTestCredentials.swift` file. Please also see the unit tests about how to use RopeCredentials to establish a connection.
 
 #### Using XCode
 
@@ -49,11 +49,7 @@ Please enter the following info via `Edit Scheme` > `Arguements` using `Environm
 
 ```
 swift build DATABASE_HOST=host DATABASE_PORT=port DATABASE_NAME=dbname DATABASE_USER=user DATABASE_PASSWORD=pass
-
-swift test
 ```
-
-Please also see the unit tests about how to use `RopeCredentials` to establish a connection.
 
 To run tests simple type `swift test` in your CLI.
 
