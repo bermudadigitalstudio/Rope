@@ -35,16 +35,16 @@ struct TestCredentials {
         return RopeCredentials(host: host, port: Int(port)!, dbName: dbName, user: user, password: password)
     }
     
-    /// Passes database credentials that were provided via arguments.
+    /// Passes database credentials that were provided via arguments
     private static func readArguments() -> RopeCredentials? {
         let argumentKeys = ["DATABASE_HOST", "DATABASE_PORT", "DATABASE_NAME", "DATABASE_USER", "DATABASE_PASSWORD"]
         
         let creds = ProcessInfo().arguments.filter {
-            let key = $0.components(separatedBy: "=").first!
-            return argumentKeys.contains(key)
+            let key = $0.components(separatedBy: "=").first! // get key, value of each argument
+            return argumentKeys.contains(key) // get only the required elements
         }.map {
-            $0.components(separatedBy: "=")
-        }.reduce([String:String]()) { list, components in
+            $0.components(separatedBy: "=") //
+        }.reduce([String:String]()) { list, components in // convert 'key=value' into a dictionary
                 var result = list
                 result[components[0]] = components[1]
                 return result
