@@ -7,12 +7,7 @@ Rope provides basic access to `PostgreSQL` in Swift around the `libpq` library.
 ```swift
 
 // fill credential struct
-let creds = RopeCredentials()
-creds.host = "localhost"
-creds.port = 5432
-creds.user = "johannes"
-creds.password = "very secure"
-creds.dbName = "mydatabase"
+let creds = RopeCredentials(host: "localhost", port: 5432, dbName: "mydatabase", user: "johannes", password: "very_secure_password")
 
 // establish connection   
 let conn = try? Rope.connect(credentials: creds)
