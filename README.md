@@ -25,13 +25,13 @@ let res = try! db.query("SELECT version();")
 ...
 ```
 
-## Supported Value Types
+## Postgres Types to Swift Conversion
 
-* `smallint`, `integer`, and `bigint` are returned as `Int`
+* `serial`, `bigserial`, `smallint`, `integer`, and `bigint` are returned as `Int`
 * `real` and `double` precision are returned as `Float`
 * `char`, `varchar`, and `text` are returned as `String`
 * the `boolean` type is returned as `Bool`
-* `date`, `timestampt` are returned as `Date`
+* `date`, `timestamp` are returned as `Date`
 
 ## Testing & Database Credentials
 
