@@ -53,6 +53,12 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 
 To run tests simple type `swift test` in your CLI.
 
+## SwiftFormat
+
+The source code is formatted using [SwiftFormat] (https://github.com/nicklockwood/SwiftFormat).
+Before any commit, be sure to perform:
+
+`> swiftformat --disable unusedArguments .`
 
 ## Contributing
 
