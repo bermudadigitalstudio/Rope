@@ -3,7 +3,7 @@
 Rope provides a convenient, easy-to-use, type-safe access to `PostgreSQL` for server-side Swift 3.   
 It uses the thread-safe, highly performant `libpq` library.
 
-<br><br>
+<br>
 ## How to Use
 
 Rope is so simple, you just need to learn 3 methods: 
@@ -33,7 +33,7 @@ if let rows = res?.rows() {
 }
 ```
 
-<br><br>
+<br>
 ## Postgres Types to Swift Conversion
 
 * `serial`, `bigserial`, `smallint`, `integer`, and `bigint` are returned as `Int`
@@ -43,7 +43,7 @@ if let rows = res?.rows() {
 * `date`, `timestamp` are returned as `Date`
 
 
-<br><br>
+<br>
 ## Running Unit Tests
 
 Rope’s unit tests require a running Postgres 9.x database and you can either provide the database credentials via environment variables, or via CLI arguments or use the built-in default values.
@@ -80,7 +80,7 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 
 To run tests simple type `swift test` in your CLI.
 
-<br><br>
+<br>
 ## Source Code Format
 
 The source code is formatted using [SwiftFormat] (https://github.com/nicklockwood/SwiftFormat).
@@ -88,7 +88,7 @@ Before any commit, be sure to perform:
 
 `> swiftformat --disable unusedArguments .`
 
-<br><br>
+<br>
 ## Contributing
 
 Titan is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
