@@ -1,6 +1,6 @@
 # Rope
 
-Rope provides basic access to `PostgreSQL` in Swift around the `libpq` library.
+Rope provides a convenient access to `PostgreSQL` for Swift 3 using the thread-safe, highly performant `libpq` library.
 
 ## Example
 
@@ -28,16 +28,28 @@ let myText = rows[0]["my_text"] as? String
 * the `boolean` type is returned as `Bool`
 * `date`, `timestamp` are returned as `Date`
 
-## Testing & Database Credentials
 
-Rope’s unit tests require a running Postgres 9.x database.
+## Running Unit Tests
+
+Rope’s unit tests require a running Postgres 9.x database and you can either provide the database credentials via environment variables, or via CLI arguments or use the built-in default values.
+
+
+#### Using Defaults
+
+All tests run without any additional configuration if your database has the following setup:
+
+* host: "localhost"
+* port: 5432
+* database name: "rope"
+* user: "postgres"
+* password: ""
+
+#### Using Environment Variables
 
 You can easily provide the database credentials via environment variables.
 Please see the `RopeTestCredentials.swift` file. Please also see the unit tests about how to use RopeCredentials to establish a connection.
 
-#### Using XCode
-
-Please enter the following info via `Edit Scheme` > `Arguements` using `Environment Variables` or `Arguments Passend On Launch`:
+For environment variables **in Xcode**, please enter the following info via `Edit Scheme` > `Arguements` using `Environment Variables` or `Arguments Passend On Launch`:
 
 * `DATABASE_HOST`
 * `DATABASE_PORT`
@@ -45,7 +57,8 @@ Please enter the following info via `Edit Scheme` > `Arguements` using `Environm
 * `DATABASE_USER`
 * `DATABASE_PASSWORD`
 
-#### Using CLI
+
+#### Using CLI Arguments
 
 ```
 swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE_NAME=mydatabase_dbname DATABASE_USER=mydatabase_user DATABASE_PASSWORD=mydatabase_very_secure_password
@@ -53,18 +66,21 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 
 To run tests simple type `swift test` in your CLI.
 
-## SwiftFormat
+
+## Source Code Format
 
 The source code is formatted using [SwiftFormat] (https://github.com/nicklockwood/SwiftFormat).
 Before any commit, be sure to perform:
 
 `> swiftformat --disable unusedArguments .`
 
+
 ## Contributing
 
 Titan is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
 
 Contributions are more than welcomed. You can either work on existing Github issues or discuss with us your ideas in a new Github issue. Thanks 🙌
+
 
 ## License
 
