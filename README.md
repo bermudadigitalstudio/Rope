@@ -1,6 +1,6 @@
 # Rope
 
-Rope provides a convenient, easy-to-learn & type-safe access to `PostgreSQL` for server-side Swift 3. 
+Rope provides a convenient, easy-to-use, type-safe access to `PostgreSQL` for server-side Swift 3.   
 It uses the thread-safe, highly performant `libpq` library.
 
 <br><br>
