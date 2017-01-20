@@ -52,11 +52,11 @@ Rope’s unit tests require a running Postgres 9.x database and you can either p
 
 All tests run without any additional configuration if your database has the following setup:
 
-* host: "localhost"
-* port: 5432
-* database name: "rope"
-* user: "postgres"
-* password: ""
+* `host: "localhost"`
+* `port: 5432`
+* `database name: "rope"`
+* `user: "postgres"`
+* `password: ""`
 
 #### Using Environment Variables
 
