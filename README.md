@@ -1,25 +1,39 @@
 # Rope
 
-Rope provides a convenient access to `PostgreSQL` for Swift 3 using the thread-safe, highly performant `libpq` library.
+Rope provides a convenient, easy-to-learn & type-safe access to `PostgreSQL` for server-side Swift 3. 
+It uses the thread-safe, highly performant `libpq` library.
 
-## Example
+<br><br>
+## How to Use
+
+Rope is so simple, you just need to learn 3 methods: 
+- `Rope()` to create a connection
+- `query()` to run a query
+- `rows()` to turn a query result into a two-dimensional array
+
 
 ```swift
 
-// fill credential struct
-let creds = RopeCredentials(host: "localhost", port: 5432, dbName: "mydatabase", user: "johannes", password: "very_secure_password")
+// credential struct as helper
+let creds = RopeCredentials(host: "localhost", port: 5432,  dbName: "mydb", 
+                            user: "foo", password: "bar")
 
-// establish connection   
+// establish connection using the struct
 let conn = try? Rope.connect(credentials: creds)
-guard let db = conn else { return }
 
 // run query
-let res = try! db.query("SELECT version();")
+let res = try! conn!.query("SELECT id, my_text FROM my_table")
 
-// show result data
-let myText = rows[0]["my_text"] as? String
+// turn result into 2-dimensional array
+if let rows = res?.rows() {
+    for let row in rows {
+        let id = row["id"] as? Int
+        let myText = row["my_text"] as? String
+    }
+}
 ```
 
+<br><br>
 ## Postgres Types to Swift Conversion
 
 * `serial`, `bigserial`, `smallint`, `integer`, and `bigint` are returned as `Int`
@@ -29,10 +43,10 @@ let myText = rows[0]["my_text"] as? String
 * `date`, `timestamp` are returned as `Date`
 
 
+<br><br>
 ## Running Unit Tests
 
 Rope’s unit tests require a running Postgres 9.x database and you can either provide the database credentials via environment variables, or via CLI arguments or use the built-in default values.
-
 
 #### Using Defaults
 
@@ -66,7 +80,7 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 
 To run tests simple type `swift test` in your CLI.
 
-
+<br><br>
 ## Source Code Format
 
 The source code is formatted using [SwiftFormat] (https://github.com/nicklockwood/SwiftFormat).
@@ -74,14 +88,14 @@ Before any commit, be sure to perform:
 
 `> swiftformat --disable unusedArguments .`
 
-
+<br><br>
 ## Contributing
 
 Titan is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
 
 Contributions are more than welcomed. You can either work on existing Github issues or discuss with us your ideas in a new Github issue. Thanks 🙌
 
-
+<br><br>
 ## License
 
 Rope is released under the [Apache 2.0 License](https://github.com/bermudadigitalstudio/rope/blob/master/LICENSE.txt).
