@@ -20,13 +20,13 @@ struct TestCredentials {
     }
 
     static var envHost: String? {
-        return ProcessInfo().environment["DATABASE_HOST"]
+        return ProcessInfo.processInfo.environment["DATABASE_HOST"]
     }
 
 
     static var processArgs: [String:String] {
         let argumentKeys = ["DATABASE_HOST", "DATABASE_PORT", "DATABASE_NAME", "DATABASE_USER", "DATABASE_PASSWORD"]
-        let creds = ProcessInfo().arguments.filter {
+        let creds = ProcessInfo.processInfo.arguments.filter {
             let key = $0.components(separatedBy: "=").first! // get key, value of each argument
             return argumentKeys.contains(key) // get only the required elements
             }.map {
@@ -41,11 +41,11 @@ struct TestCredentials {
 
     /// provides database credentials unsing environment variables
     private static func readEnvironment() -> RopeCredentials? {
-        guard let host = ProcessInfo().environment["DATABASE_HOST"],
-            let port = ProcessInfo().environment["DATABASE_PORT"],
-            let dbName = ProcessInfo().environment["DATABASE_NAME"],
-            let user = ProcessInfo().environment["DATABASE_USER"],
-            let password = ProcessInfo().environment["DATABASE_PASSWORD"]
+        guard let host = ProcessInfo.processInfo.environment["DATABASE_HOST"],
+            let port = ProcessInfo.processInfo.environment["DATABASE_PORT"],
+            let dbName = ProcessInfo.processInfo.environment["DATABASE_NAME"],
+            let user = ProcessInfo.processInfo.environment["DATABASE_USER"],
+            let password = ProcessInfo.processInfo.environment["DATABASE_PASSWORD"]
         else {
             return nil
         }
