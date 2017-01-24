@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -exo pipefail
+
+PG_CONTAINER=$(docker run -d --rm postgres:alpine)
+
+docker build . -t rope
+docker run -it --rm --env DATABASE_HOST=$PG_CONTAINER rope
+
+docker stop $PG_CONTAINER
