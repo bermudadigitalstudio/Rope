@@ -10,7 +10,7 @@ struct TestCredentials {
         // used if no credentials were set in ENV vars or build args
         let defaultCredentials = RopeCredentials(host: "localhost",
                                                  port: 5432,
-                                                 dbName: "rope",
+                                                 dbName: "postgres",
                                                  user: "postgres",
                                                  password: "")
 
