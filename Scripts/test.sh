@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# DISCUSSION
+# Two containers are created: one is based on the latest Postgres alpine image;
+# the other contains the source code to Rope with libpq preinstalled. The two
+# containers are linked with a bridge network and the Postgres container is
+# accessible as the postgres host, exposing its DB on the default Postgres port.
 
 # -e: exit when a command fails
 # -x: print command as it executes

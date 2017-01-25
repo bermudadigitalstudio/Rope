@@ -1,3 +1,4 @@
+// LinuxMain.stencil is a template ripped from Sourcery's main codebase that autogenerates the XCTMain call for us!
 import XCTest
 @testable import RopeTests
 {% for type in types.classes|based:"XCTestCase" %}
