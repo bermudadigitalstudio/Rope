@@ -1,5 +1,6 @@
 import XCTest
 import Rope
+import Foundation
 
 final class RopeQueryTests: XCTestCase {
 
@@ -56,16 +57,16 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertNotNil(res)
         XCTAssertEqual(res?.rows().count, 0)
     }
-    
+
     func testReadmeExample() {
         // test the code displayed in the README example
         let conn = try? Rope.connect(credentials: creds)
-        
+
         // run queries
         let _ = try! conn!.query("INSERT INTO rope (my_text) VALUES('Readme works')")
         let res = try! conn!.query("SELECT * FROM rope")
         XCTAssertNotNil(res?.rows())
-        
+
         // turn result into 2-dimensional array
         if let rows = res?.rows() {
             for row in rows {
