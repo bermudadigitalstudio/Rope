@@ -30,7 +30,7 @@ docker run -d `# Run it in background` \
   --name $POSTGRES_CONTAINER_NAME `# Give it a specific name we can refer to later` \
   postgres:alpine # Specify the image – alpine is nice and tiny
 
-docker build . -t rope # Build our image and name it 'rope'
+docker build -t rope . # Build our image and name it 'rope'
 sleep 5 # Wait for PG to come up
 docker run --rm \
   --net $TEST_NETWORK_NAME \

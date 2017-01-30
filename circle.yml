@@ -11,7 +11,7 @@ dependencies:
   override:
     - docker --version
     - docker run --name pg_docker -d postgres:alpine
-    - docker build . -t rope
+    - docker build -t rope .
 
 test:
   override:
