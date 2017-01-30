@@ -1,0 +1,19 @@
+# CircleCI & Docker
+#
+# learn more at https://karthikv.net/articles/circleci-docker-flow/
+# and https://circleci.com/docs/docker/
+
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker --version
+    - docker run --name pg_docker -d postgres:alpine
+    - docker build -t rope .
+
+test:
+  override:
+    # bind the postgres docker container to localhost at rope container
+    - docker run --rm --name rope_test --link pg_docker:localhost rope
