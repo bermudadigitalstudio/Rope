@@ -10,7 +10,10 @@ machine:
 dependencies:
   override:
     - docker --version
+    - docker run --name pg_docker -d postgres:alpine
+    - docker build . -t rope
 
 test:
   override:
-    - Scripts/test.sh
+    # bind the postgres docker container to localhost at rope container
+    - docker run --rm --name rope_test --link pg_docker:localhost rope
