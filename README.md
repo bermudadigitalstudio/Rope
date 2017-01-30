@@ -3,7 +3,7 @@
 Rope provides a convenient, easy-to-use, type-safe access to `PostgreSQL` for server-side Swift 3.   
 It uses the thread-safe, highly performant `libpq` library.
 
-[![Language Swift 3](https://img.shields.io/badge/Language-Swift%203-orange.svg)](https://swift.org) ![Platforms](https://img.shields.io/badge/Platforms-Docker%20%7C%20Linux%20%7C%20macOS-blue.svg) [![CircleCI](https://circleci.com/gh/bermudadigitalstudio/Rope/tree/master.svg?style=svg)](https://circleci.com/gh/bermudadigitalstudio/Rope)
+[![Language Swift 3](https://img.shields.io/badge/Language-Swift%203-orange.svg)](https://swift.org) ![Platforms](https://img.shields.io/badge/Platforms-Docker%20%7C%20Linux%20%7C%20macOS-blue.svg) [![CircleCI](https://circleci.com/gh/bermudadigitalstudio/Rope/tree/master.svg?style=shield)](https://circleci.com/gh/bermudadigitalstudio/Rope)
 
 <br>
 ## How to Use
