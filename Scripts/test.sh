@@ -6,9 +6,8 @@
 # accessible as the postgres host, exposing its DB on the default Postgres port.
 
 # -e: exit when a command fails
-# -x: print command as it executes
 # -o pipefail: set exit status of shell script to last nonzero exit code, if any were nonzero.
-set -exo pipefail
+set -eo pipefail
 
 POSTGRES_CONTAINER_NAME=rope_tests_postgres
 TEST_NETWORK_NAME=rope_tests
