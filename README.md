@@ -8,8 +8,8 @@ It uses the thread-safe, highly performant `libpq` library.
 <br>
 ## How to Use
 
-Rope is so simple, you just need to learn 3 methods: 
-- `Rope()` to create a connection
+Rope is so simple, you just need to learn 3 methods:
+- `connect()` to create a connection
 - `query()` to run a query
 - `rows()` to turn a query result into a two-dimensional array
 
@@ -17,7 +17,7 @@ Rope is so simple, you just need to learn 3 methods:
 ```swift
 
 // credential struct as helper
-let creds = RopeCredentials(host: "localhost", port: 5432,  dbName: "mydb", 
+let creds = RopeCredentials(host: "localhost", port: 5432,  dbName: "mydb",
                             user: "foo", password: "bar")
 
 // establish connection using the struct
@@ -93,7 +93,7 @@ Before any commit, be sure to perform:
 <br>
 ## Contributing
 
-Titan is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
+Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
 
 Contributions are more than welcomed. You can either work on existing Github issues or discuss with us your ideas in a new Github issue. Thanks 🙌
 
