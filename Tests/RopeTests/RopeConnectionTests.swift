@@ -7,7 +7,7 @@ final class RopeConnectionTests: XCTestCase {
 
     func testConnectWithParams() {
         // if the test fails then the credentials in Secrets.swift are wrong
-        guard let conn = try? Rope.connect(host: creds.host, port: creds.port,
+        guard let _ = try? Rope.connect(host: creds.host, port: creds.port,
                                            dbName: creds.dbName,
                                            user: creds.user,
                                            password: creds.password) else {
@@ -18,7 +18,7 @@ final class RopeConnectionTests: XCTestCase {
 
     func testConnectWithStruct() {
         // if the test fails then the credentials in Secrets.swift are wrong
-        guard let conn = try? Rope.connect(credentials: creds) else {
+        guard let _ = try? Rope.connect(credentials: creds) else {
             XCTFail("conn should not be nil")
             return
         }
