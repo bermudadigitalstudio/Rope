@@ -12,10 +12,12 @@ final class RopeQueryTests: XCTestCase {
         super.setUp()
 
         // create connection
-        conn = try? Rope.connect(credentials: creds)
-        XCTAssertNotNil(conn)
-
-        guard let db = conn else { return }
+        guard let db = try? Rope.connect(credentials: creds) else {
+            XCTFail("conn should not be nil")
+            return
+        }
+        conn = db
+        
         guard let _ = try? db.query("DROP TABLE IF EXISTS rope") else {
             XCTFail("_ should not be nil")
             return
