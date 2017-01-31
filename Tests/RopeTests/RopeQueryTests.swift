@@ -42,13 +42,13 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testEmptyQueryStatement() {
-        XCTAssertThrowsError(try conn!.query(""))
+        XCTAssertThrowsError(try conn?.query(""))
     }
 
     func testInvalidQueryStatement() {
         XCTAssertThrowsError(
             // comma is missing
-            try conn!.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY name TEXT))")
+            try conn?.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY name TEXT))")
         )
     }
 
