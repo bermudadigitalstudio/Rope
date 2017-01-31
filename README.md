@@ -20,15 +20,28 @@ Rope is so simple, you just need to learn 3 methods:
 let creds = RopeCredentials(host: "localhost", port: 5432,  dbName: "mydb",
                             user: "foo", password: "bar")
 
-// establish connection using the struct
-let conn = try? Rope.connect(credentials: creds)
+// establish connection using the struct, returns nil on error
+guard let db = try? Rope.connect(credentials: creds) else {
+	print("Could not connect to Postgres")
+	return
+}
 
-// run query
-let res = try! conn!.query("SELECT id, my_text FROM my_table")
+// run INSERT query, it returns nil on a syntax or connection error
+let text = "Hello World"
+guard let _ = try? db.query("INSERT INTO my_table (my_text) VALUES('\(text)')')") else {
+	print("Could not insert \(text) into database"); 
+	return
+}
+
+// run SELECT query, it returns nil on a syntax or connection error
+guard let res = try? db.query("SELECT id, my_text FROM my_table") else {
+	print("Could not fetch id & my_text from database")
+	return
+}
 
 // turn result into 2-dimensional array
 if let rows = res?.rows() {
-    for let row in rows {
+    for row in rows {
         let id = row["id"] as? Int
         let myText = row["my_text"] as? String
     }
@@ -83,17 +96,14 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 To run tests simple type `swift test` in your CLI.
 
 <br>
-## Source Code Format
+## Source Code Linting
 
-The source code is formatted using [SwiftFormat] (https://github.com/nicklockwood/SwiftFormat).
-Before any commit, be sure to perform:
-
-`> swiftformat --disable unusedArguments .`
+The source code is formatted using [SwiftLint](https://github.com/realm/SwiftLint) and all commits & PRs need to be without any SwiftLint warnings or errors.
 
 <br>
 ## Contributing
 
-Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
+Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)).
 
 Contributions are more than welcomed. You can either work on existing Github issues or discuss with us your ideas in a new Github issue. Thanks 🙌
 

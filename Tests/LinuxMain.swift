@@ -7,7 +7,7 @@ import XCTest
 extension RopeConnectionTests {
   static var allTests = [
     ("testConnectWithParams", testConnectWithParams),
-    ("testConnectWithStruct", testConnectWithStruct),
+    ("testConnectWithStruct", testConnectWithStruct)
   ]
 }
 
@@ -20,12 +20,11 @@ extension RopeQueryTests {
     ("testReadmeExample", testReadmeExample),
     ("testQuerySelectRowStringTypes", testQuerySelectRowStringTypes),
     ("testQuerySelectRowNumericTypes", testQuerySelectRowNumericTypes),
-    ("testQuerySelectRowDateTypes", testQuerySelectRowDateTypes),
+    ("testQuerySelectRowDateTypes", testQuerySelectRowDateTypes)
   ]
 }
 
-
 XCTMain([
   testCase(RopeConnectionTests.allTests),
-  testCase(RopeQueryTests.allTests),
+  testCase(RopeQueryTests.allTests)
 ])

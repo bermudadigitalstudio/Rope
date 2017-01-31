@@ -12,12 +12,16 @@ final class RopeQueryTests: XCTestCase {
         super.setUp()
 
         // create connection
-        conn = try? Rope.connect(credentials: creds)
-        XCTAssertNotNil(conn)
+        guard let db = try? Rope.connect(credentials: creds) else {
+            XCTFail("conn should not be nil")
+            return
+        }
+        conn = db
 
-        guard let db = conn else { return }
-        var res = try! db.query("DROP TABLE IF EXISTS rope")
-        XCTAssertNotNil(res)
+        guard let _ = try? db.query("DROP TABLE IF EXISTS rope") else {
+            XCTFail("_ should not be nil")
+            return
+        }
 
         // create a table with different types as test, payload can be nil
         var sql = "CREATE TABLE rope (id SERIAL PRIMARY KEY, my_text TEXT, my_bool BOOLEAN default FALSE"
@@ -27,8 +31,10 @@ final class RopeQueryTests: XCTestCase {
         sql += ", my_date DATE default (now() at time zone 'utc')"
         sql += ", my_ts TIMESTAMP default (now() at time zone 'utc')"
         sql += ");"
-        res = try! db.query(sql)
-        XCTAssertNotNil(res)
+        guard let _ = try? db.query(sql) else {
+            XCTFail("_ should not be nil")
+            return
+        }
     }
 
     override func tearDown() {
@@ -36,61 +42,66 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testEmptyQueryStatement() {
-        XCTAssertThrowsError(try conn!.query(""))
+        XCTAssertThrowsError(try conn?.query(""))
     }
 
     func testInvalidQueryStatement() {
         XCTAssertThrowsError(
             // comma is missing
-            try conn!.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY name TEXT))")
+            try conn?.query("CREATE TABLE IF NOT EXISTS rope(id SERIAL PRIMARY KEY name TEXT))")
         )
     }
 
     func testBasicQueryStatement() {
         // the following SQL should always work, even on empty databases
-        let res = try! conn!.query("SELECT version();")
-        XCTAssertNotNil(res)
+        //let res = try! conn!.query("SELECT version();")
+        //XCTAssertNotNil(res)
+        guard let _ = try? conn?.query("SELECT version();") else {
+            XCTFail("_ should not be nil")
+            return
+        }
     }
 
     func testQueryInsertStatement() {
-        let res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
-        XCTAssertNotNil(res)
+        guard let res = try? conn?.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')") else {
+            XCTFail("res should not be nil")
+            return
+        }
         XCTAssertEqual(res?.rows().count, 0)
     }
 
     func testReadmeExample() {
-        // test the code displayed in the README example
-        let conn = try? Rope.connect(credentials: creds)
+        // establish connection using the struct, returns nil on error
+        guard let db = try? Rope.connect(credentials: creds) else {
+            XCTFail("db should not be nil")
+            print("Could not connect to Postgres")
+            return
+        }
 
-        // run queries
-        let _ = try! conn!.query("INSERT INTO rope (my_text) VALUES('Readme works')")
-        let res = try! conn!.query("SELECT * FROM rope")
-        XCTAssertNotNil(res?.rows())
+        // run query, it returns nil on error
+        guard let res = try? db.query("SELECT * FROM rope") else {
+            XCTFail("res should not be nil")
+            print("Could not fetch id & my_text from database")
+            return
+        }
 
         // turn result into 2-dimensional array
         if let rows = res?.rows() {
             for row in rows {
-                // convert values into Swift types
                 let id = row["id"] as? Int
                 let myText = row["my_text"] as? String
                 XCTAssertEqual(id, 1)
                 XCTAssertEqual(myText, "Readme works")
             }
         }
+        XCTAssertNotNil(res?.rows())
     }
 
     func testQuerySelectRowStringTypes() {
-        // insert 2 rows
-        var res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
-        XCTAssertNotNil(res)
-        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')")
-        XCTAssertNotNil(res)
-
-        // select the rows
-        res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
-        XCTAssertNotNil(res)
-
-        guard let rows = res?.rows() else { return }
+        guard let rows = insertAndSelectTestRows() else {
+            XCTFail("rows should not be nil")
+            return
+        }
         XCTAssertEqual(rows.count, 2)
 
         // text to string
@@ -111,17 +122,10 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testQuerySelectRowNumericTypes() {
-        // insert 2 rows
-        var res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
-        XCTAssertNotNil(res)
-        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')")
-        XCTAssertNotNil(res)
-
-        // select the rows
-        res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
-        XCTAssertNotNil(res)
-
-        guard let rows = res?.rows() else { return }
+        guard let rows = insertAndSelectTestRows() else {
+            XCTFail("rows should not be nil")
+            return
+        }
         XCTAssertEqual(rows.count, 2)
 
         let id = rows[0]["id"] as? Int
@@ -149,17 +153,10 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testQuerySelectRowDateTypes() {
-        // insert 2 rows
-        var res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')")
-        XCTAssertNotNil(res)
-        res = try! conn!.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')")
-        XCTAssertNotNil(res)
-
-        // select the rows
-        res = try! conn!.query("SELECT * FROM rope ORDER BY id DESC")
-        XCTAssertNotNil(res)
-
-        guard let rows = res?.rows() else { return }
+        guard let rows = insertAndSelectTestRows() else {
+            XCTFail("rows should not be nil")
+            return
+        }
         XCTAssertEqual(rows.count, 2)
 
         // text to string
@@ -209,8 +206,7 @@ final class RopeQueryTests: XCTestCase {
         // check if date (is 0:00) and timestamp are correct are correct
         let now = Date()
         XCTAssertEqual(
-            formatDate(myTS!, format: "YYY-mm-dd HH:mm"),
-            formatDate(now, format: "YYY-mm-dd HH:mm")
+            formatDate(myTS!, format: "YYY-mm-dd HH:mm"), formatDate(now, format: "YYY-mm-dd HH:mm")
         )
 
         let myDateDay = Calendar.current.component(.day, from: myDate!)
@@ -224,6 +220,33 @@ final class RopeQueryTests: XCTestCase {
         // a non-existing column is nil
         let idx = rows[0]["xid"] as? Int
         XCTAssertNil(idx)
+    }
+
+    /// helper function which tests the connection and
+    /// inserts two rows to test defaults & type conversion
+    /// returns the optional rows, nil on error
+    func insertAndSelectTestRows() -> [[String: Any?]]? {
+        guard let conn = conn else {
+            XCTFail("conn should not be nil")
+            return nil
+        }
+
+        // insert 2 rows
+        guard let _ = try? conn.query("INSERT INTO rope (my_text) VALUES('Rope is awesome!')") else {
+            XCTFail("_ should not be nil")
+            return nil
+        }
+        guard let _ = try? conn.query("INSERT INTO rope (my_text) VALUES('Rope is dope!')") else {
+            XCTFail("_ should not be nil")
+            return nil
+        }
+
+        // select the rows
+        guard let res = try? conn.query("SELECT * FROM rope ORDER BY id DESC") else {
+            XCTFail("res should not be nil")
+            return nil
+        }
+        return res?.rows()
     }
 }
 
