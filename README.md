@@ -20,15 +20,28 @@ Rope is so simple, you just need to learn 3 methods:
 let creds = RopeCredentials(host: "localhost", port: 5432,  dbName: "mydb",
                             user: "foo", password: "bar")
 
-// establish connection using the struct
-let conn = try? Rope.connect(credentials: creds)
+// establish connection using the struct, returns nil on error
+guard let db = try? Rope.connect(credentials: creds) else {
+	print("Could not connect to Postgres")
+	return
+}
 
-// run query
-let res = try! conn!.query("SELECT id, my_text FROM my_table")
+// run INSERT query, it returns nil on a syntax or connection error
+let text = "Hello World"
+guard let _ = try? db.query("INSERT INTO my_table (my_text) VALUES('\(text)')')") else {
+	print("Could not insert \(text) into database"); 
+	return
+}
+
+// run SELECT query, it returns nil on a syntax or connection error
+guard let res = try? db.query("SELECT id, my_text FROM my_table") else {
+	print("Could not fetch id & my_text from database")
+	return
+}
 
 // turn result into 2-dimensional array
 if let rows = res?.rows() {
-    for let row in rows {
+    for row in rows {
         let id = row["id"] as? Int
         let myText = row["my_text"] as? String
     }

@@ -17,7 +17,7 @@ final class RopeQueryTests: XCTestCase {
             return
         }
         conn = db
-        
+
         guard let _ = try? db.query("DROP TABLE IF EXISTS rope") else {
             XCTFail("_ should not be nil")
             return
@@ -71,7 +71,32 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testReadmeExample() {
-        // test the code displayed in the README example
+        // establish connection using the struct, returns nil on error
+        guard let db = try? Rope.connect(credentials: creds) else {
+            XCTFail("db should not be nil")
+            print("Could not connect to Postgres")
+            return
+        }
+
+        // run query, it returns nil on error
+        guard let res = try? db.query("SELECT * FROM rope") else {
+            XCTFail("res should not be nil")
+            print("Could not fetch id & my_text from database")
+            return
+        }
+
+        // turn result into 2-dimensional array
+        if let rows = res?.rows() {
+            for row in rows {
+                let id = row["id"] as? Int
+                let myText = row["my_text"] as? String
+                XCTAssertEqual(id, 1)
+                XCTAssertEqual(myText, "Readme works")
+            }
+        }
+        XCTAssertNotNil(res?.rows())
+
+        /*
         guard let conn = conn else {
             XCTFail("conn should not be nil")
             return
@@ -97,7 +122,7 @@ final class RopeQueryTests: XCTestCase {
                 XCTAssertEqual(id, 1)
                 XCTAssertEqual(myText, "Readme works")
             }
-        }
+        }*/
     }
 
     func testQuerySelectRowStringTypes() {
