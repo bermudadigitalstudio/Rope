@@ -95,34 +95,6 @@ final class RopeQueryTests: XCTestCase {
             }
         }
         XCTAssertNotNil(res?.rows())
-
-        /*
-        guard let conn = conn else {
-            XCTFail("conn should not be nil")
-            return
-        }
-
-        // run queries
-        guard let _ = try? conn.query("INSERT INTO rope (my_text) VALUES('Readme works')") else {
-            XCTFail("_ should not be nil")
-            return
-        }
-        guard let res = try? conn.query("SELECT * FROM rope") else {
-            XCTFail("res should not be nil")
-            return
-        }
-        XCTAssertNotNil(res?.rows())
-
-        // turn result into 2-dimensional array
-        if let rows = res?.rows() {
-            for row in rows {
-                // convert values into Swift types
-                let id = row["id"] as? Int
-                let myText = row["my_text"] as? String
-                XCTAssertEqual(id, 1)
-                XCTAssertEqual(myText, "Readme works")
-            }
-        }*/
     }
 
     func testQuerySelectRowStringTypes() {
