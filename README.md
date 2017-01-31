@@ -83,17 +83,14 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 To run tests simple type `swift test` in your CLI.
 
 <br>
-## Source Code Format
+## Source Code Linting
 
-The source code is formatted using [SwiftFormat] (https://github.com/nicklockwood/SwiftFormat).
-Before any commit, be sure to perform:
-
-`> swiftformat --disable unusedArguments .`
+The source code is formatted using [SwiftLint](https://github.com/realm/SwiftLint) and all commits & PRs need to be without any SwiftLint warnings or errors.
 
 <br>
 ## Contributing
 
-Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)) and Gabriel Peart ([@gabrielPeart](https://github.com/gabrielPeart)).
+Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)).
 
 Contributions are more than welcomed. You can either work on existing Github issues or discuss with us your ideas in a new Github issue. Thanks 🙌
 
