@@ -23,7 +23,6 @@ struct TestCredentials {
         return ProcessInfo.processInfo.environment["DATABASE_HOST"]
     }
 
-
     static var processArgs: [String:String] {
         let argumentKeys = ["DATABASE_HOST", "DATABASE_PORT", "DATABASE_NAME", "DATABASE_USER", "DATABASE_PASSWORD"]
         let creds = ProcessInfo.processInfo.arguments.filter {
