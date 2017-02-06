@@ -41,7 +41,7 @@ struct TestCredentials {
     /// provides database credentials unsing environment variables
     private static func readEnvironment() -> RopeCredentials? {
         guard let host = ProcessInfo.processInfo.environment["DATABASE_HOST"],
-            let port = ProcessInfo.processInfo.environment["DATABASE_PORT"],
+            let portEnv = ProcessInfo.processInfo.environment["DATABASE_PORT"], let port = Int(portEnv),
             let dbName = ProcessInfo.processInfo.environment["DATABASE_NAME"],
             let user = ProcessInfo.processInfo.environment["DATABASE_USER"],
             let password = ProcessInfo.processInfo.environment["DATABASE_PASSWORD"]
@@ -49,14 +49,14 @@ struct TestCredentials {
             return nil
         }
 
-        return RopeCredentials(host: host, port: Int(port)!, dbName: dbName, user: user, password: password)
+        return RopeCredentials(host: host, port: port, dbName: dbName, user: user, password: password)
     }
 
     /// Passes database credentials that were provided via arguments
     private static func readArguments() -> RopeCredentials? {
         let creds = processArgs
         guard let host = creds["DATABASE_HOST"],
-            let port = creds["DATABASE_PORT"],
+            let portEnv = creds["DATABASE_PORT"], let port = Int(portEnv),
             let dbName = creds["DATABASE_NAME"],
             let user = creds["DATABASE_USER"],
             let password = creds["DATABASE_PASSWORD"]
@@ -64,6 +64,6 @@ struct TestCredentials {
             return nil
         }
 
-        return RopeCredentials(host: host, port: Int(port)!, dbName: dbName, user: user, password: password)
+        return RopeCredentials(host: host, port: port, dbName: dbName, user: user, password: password)
     }
 }
