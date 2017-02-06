@@ -56,7 +56,7 @@ final class RopeQueryJSONTests: XCTestCase {
             XCTFail("res should not be nil"); return
         }
 
-        let payload = row["json"] as? [String: Any?]
+        let payload = row["json"] as? [String: Any]
         XCTAssertNotNil(payload)
 
         guard let method = payload?["method"] as? String,

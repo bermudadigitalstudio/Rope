@@ -121,13 +121,13 @@ public final class RopeResult {
         return formatter.date(from: dateValue)
     }
 
-    private func convert(jsonValue: String) -> [String: Any?]? {
+    private func convert(jsonValue: String) -> [String: Any]? {
         guard let data = jsonValue.data(using: String.Encoding.utf8) else {
             return nil
         }
 
         do {
-            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any?]
+            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any]
         } catch {
             return nil
         }
