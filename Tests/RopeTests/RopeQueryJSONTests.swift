@@ -14,13 +14,16 @@ final class RopeQueryJSONTests: XCTestCase {
         conn = try? Rope.connect(credentials: creds)
         XCTAssertNotNil(conn)
 
-        guard let db = conn else { return }
-        var res = try! db.query("DROP TABLE IF EXISTS json")
-        XCTAssertNotNil(res)
+        guard let dropRes = try? conn?.query("DROP TABLE IF EXISTS json") else {
+            XCTFail("res should not be nil"); return
+        }
+        XCTAssertNotNil(dropRes)
 
         // create a table with different types as test, payload can be nil
-        res = try! db.query("CREATE TABLE IF NOT EXISTS json (id SERIAL PRIMARY KEY,  json JSONB);")
-        XCTAssertNotNil(res)
+        guard let createRes = try? conn?.query("CREATE TABLE IF NOT EXISTS json (id SERIAL PRIMARY KEY,  json JSONB);") else {
+            XCTFail("res should not be nil"); return
+        }
+        XCTAssertNotNil(createRes)
     }
 
     override func tearDown() {
