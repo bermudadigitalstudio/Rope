@@ -24,7 +24,14 @@ extension RopeQueryTests {
   ]
 }
 
+extension RopeQueryJSONTests {
+  static var allTests = [
+    ("testQueryInsertStatement", testQueryInsertStatement)
+  ]
+}
+
 XCTMain([
   testCase(RopeConnectionTests.allTests),
-  testCase(RopeQueryTests.allTests)
+  testCase(RopeQueryTests.allTests),
+  testCase(RopeQueryJSONTests.allTests)
 ])

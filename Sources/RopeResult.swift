@@ -8,9 +8,10 @@ import Foundation
 
 public enum RopeValueType: Int {
     case unsupported = -1, bool = 16, int64 = 20, int16 = 21,
-    int32 = 23, text = 25, float = 700, double = 701,
-    char = 1042, varchar = 1043,
-    date = 1082, timestamp = 1114
+    int32 = 23, float = 700, double = 701,
+    char = 1042, varchar = 1043, text = 25,
+    date = 1082, timestamp = 1114,
+    json = 3802
 }
 
 public final class RopeResult {
@@ -91,6 +92,8 @@ public final class RopeResult {
             return Float(stringValue)
         case .text, .char, .varchar:
             return stringValue
+        case .json:
+            return convert(jsonValue: stringValue)
         case .date, .timestamp:
             let date = convert(dateValue: stringValue, valueType: type)
             return date
@@ -116,6 +119,18 @@ public final class RopeResult {
         formatter.dateFormat = format
 
         return formatter.date(from: dateValue)
+    }
+    
+    private func convert(jsonValue: String) -> [String: Any?]? {
+        guard let data = jsonValue.data(using: String.Encoding.utf8) else {
+            return nil
+        }
+        
+        do {
+            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any?]
+        } catch {
+            return nil
+        }
     }
 
     private func close() throws {
