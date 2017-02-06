@@ -8,8 +8,8 @@ import Foundation
 
 public enum RopeValueType: Int {
     case unsupported = -1, bool = 16, int64 = 20, int16 = 21,
-    int32 = 23, text = 25, float = 700, double = 701,
-    char = 1042, varchar = 1043,
+    int32 = 23, float = 700, double = 701,
+    char = 1042, varchar = 1043, text = 25, json = 3802,
     date = 1082, timestamp = 1114
 }
 
@@ -89,7 +89,7 @@ public final class RopeResult {
             return Int(stringValue)
         case .float, .double:
             return Float(stringValue)
-        case .text, .char, .varchar:
+        case .text, .char, .varchar, .json:
             return stringValue
         case .date, .timestamp:
             let date = convert(dateValue: stringValue, valueType: type)
