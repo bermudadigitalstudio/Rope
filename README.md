@@ -29,7 +29,7 @@ guard let db = try? Rope.connect(credentials: creds) else {
 // run INSERT query, it returns nil on a syntax or connection error
 let text = "Hello World"
 guard let _ = try? db.query("INSERT INTO my_table (my_text) VALUES('\(text)')')") else {
-	print("Could not insert \(text) into database"); 
+	print("Could not insert \(text) into database");
 	return
 }
 
@@ -54,6 +54,7 @@ if let rows = res?.rows() {
 * `serial`, `bigserial`, `smallint`, `integer`, and `bigint` are returned as `Int`
 * `real` and `double` precision are returned as `Float`
 * `char`, `varchar`, and `text` are returned as `String`
+* `json` is converted to a `Dictionary` of `[String: Any?]`
 * the `boolean` type is returned as `Bool`
 * `date`, `timestamp` are returned as `Date`
 
