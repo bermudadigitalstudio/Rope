@@ -66,7 +66,7 @@ public final class Rope {
         let conn = PQsetdbLogin(host, String(port), "", "", dbName, user, password)
 
         guard PQstatus(conn) == CONNECTION_OK else {
-            try failWithError(conn); return
+            throw failWithError(conn)
         }
 
         self.conn = conn
@@ -82,14 +82,14 @@ public final class Rope {
         return try execQuery(statement: statement, params: params)
     }
 
-    private func execQuery(statement: String, params: [Any]? = nil) throws -> RopeResult? {
+    private func execQuery(statement: String, params: [Any]? = nil) throws -> RopeResult {
         if statement.isEmpty {
             throw RopeError.emptyQuery
         }
 
         guard let params = params else {
             guard let res = PQexec(self.conn, statement) else {
-                try failWithError(); return nil
+                throw failWithError()
             }
 
             return try validateQueryResultStatus(res)
@@ -112,9 +112,8 @@ public final class Rope {
             values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
         }
 
-        guard let res = PQexecParams(self.conn, statement, Int32(params.count),
-                                     nil, values, nil, nil, Int32(0)) else {
-            try failWithError(); return nil
+        guard let res = PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0)) else {
+            throw failWithError()
         }
 
         return try validateQueryResultStatus(res)
@@ -135,15 +134,15 @@ public final class Rope {
 
     private func close() throws {
         guard self.connected else {
-            try failWithError(); return
+            throw failWithError()
         }
 
         PQfinish(conn)
         conn = nil
     }
 
-    private func failWithError(_ conn: OpaquePointer? = nil) throws {
+    private func failWithError(_ conn: OpaquePointer? = nil) -> Error {
         let message = String(cString: PQerrorMessage(conn ?? self.conn))
-        throw RopeError.connectionFailed(message: message)
+        return RopeError.connectionFailed(message: message)
     }
 }
