@@ -220,6 +220,21 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertNil(idx)
     }
 
+    func testPreparedStatement() {
+        // Set up
+        _ = try! conn!.query("CREATE TEMPORARY TABLE prepared_statement_table(id integer PRIMARY KEY, title text)")
+        _ = try! conn!.query("INSERT INTO prepared_statement_table(id, title) VALUES(20,'War And Peace'),(30,'1984'),(40,'Fahrenheit 951')")
+        // Prepare it baby!
+        _ = try! conn!.query("PREPARE my_special_query(text) AS SELECT id FROM prepared_statement_table WHERE title = $1")
+
+        // Test it out
+        let result = try? conn!.executePreparedStatement(named: "my_special_query", params: "1984")
+        let id = result?.rows().first?["id"] as? Int
+        dump(result?.rows())
+        XCTAssertEqual(id, 30)
+
+    }
+
     /// helper function which tests the connection and
     /// inserts two rows to test defaults & type conversion
     /// returns the optional rows, nil on error
