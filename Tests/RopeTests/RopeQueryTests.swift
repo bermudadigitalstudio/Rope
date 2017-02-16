@@ -230,7 +230,6 @@ final class RopeQueryTests: XCTestCase {
         // Test it out
         let result = try? conn!.executePreparedStatement(named: "my_special_query", params: "1984")
         let id = result?.rows().first?["id"] as? Int
-        dump(result?.rows())
         XCTAssertEqual(id, 30)
 
     }
