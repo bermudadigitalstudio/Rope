@@ -73,12 +73,12 @@ public final class Rope {
     }
 
     /// query database with SQL statement
-    public func query(_ statement: String) throws -> RopeResult? {
+    public func query(_ statement: String) throws -> RopeResult {
         return try execQuery(statement: statement)
     }
 
     /// query database with SQL statement, use $1, $2, etc. for params in SQL
-    public func query(statement: String, params: [Any]) throws -> RopeResult? {
+    public func query(statement: String, params: [Any]) throws -> RopeResult {
         return try execQuery(statement: statement, params: params)
     }
 

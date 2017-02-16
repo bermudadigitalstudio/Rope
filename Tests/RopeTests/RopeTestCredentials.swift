@@ -8,11 +8,13 @@ struct TestCredentials {
     static func getCredentials() -> RopeCredentials {
 
         // used if no credentials were set in ENV vars or build args
-        return RopeCredentials(host: argHost ?? envHost ?? "localhost",
-                                                 port: 5432,
-                                                 dbName: "postgres",
-                                                 user: "postgres",
-                                                 password: "")
+        return RopeCredentials(
+            host: argHost ?? envHost ?? "localhost",
+            port: 5432,
+            dbName: "postgres",
+            user: "postgres",
+            password: ""
+        )
     }
 
     static var argHost: String? {

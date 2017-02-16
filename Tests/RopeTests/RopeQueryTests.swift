@@ -86,15 +86,13 @@ final class RopeQueryTests: XCTestCase {
         }
 
         // turn result into 2-dimensional array
-        if let rows = res?.rows() {
-            for row in rows {
-                let id = row["id"] as? Int
-                let myText = row["my_text"] as? String
-                XCTAssertEqual(id, 1)
-                XCTAssertEqual(myText, "Readme works")
-            }
+        for row in res.rows() {
+            let id = row["id"] as? Int
+            let myText = row["my_text"] as? String
+            XCTAssertEqual(id, 1)
+            XCTAssertEqual(myText, "Readme works")
         }
-        XCTAssertNotNil(res?.rows())
+        XCTAssertNotNil(res.rows())
     }
 
     func testQuerySelectRowStringTypes() {
@@ -246,7 +244,7 @@ final class RopeQueryTests: XCTestCase {
             XCTFail("res should not be nil")
             return nil
         }
-        return res?.rows()
+        return res.rows()
     }
 }
 
