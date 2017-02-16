@@ -32,6 +32,7 @@ public struct RopeCredentials {
 public final class Rope {
 
     private(set) var conn: OpaquePointer!
+    private let connectionQueue: DispatchQueue = DispatchQueue(label: "com.rope.connection-queue-\(UUID().uuidString)")
 
     public var connected: Bool {
         guard let conn = conn, PQstatus(conn) == CONNECTION_OK else {
@@ -88,7 +89,10 @@ public final class Rope {
         }
 
         guard let params = params else {
-            guard let res = PQexec(self.conn, statement) else {
+            let result = self.connectionQueue.sync {
+                return PQexec(self.conn, statement)
+            }
+            guard let res = result else {
                 throw failWithError()
             }
 
@@ -111,8 +115,10 @@ public final class Rope {
             tempValues.append(Array<UInt8>(s) + [0])
             values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
         }
-
-        guard let res = PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0)) else {
+        let result = self.connectionQueue.sync {
+            return PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0))
+        }
+        guard let res = result else {
             throw failWithError()
         }
 
@@ -146,3 +152,5 @@ public final class Rope {
         return RopeError.connectionFailed(message: message)
     }
 }
+import Dispatch
+import struct Foundation.UUID
