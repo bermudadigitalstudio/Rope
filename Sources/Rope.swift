@@ -4,6 +4,9 @@
     @_exported import RopeMacOS
 #endif
 
+import Dispatch
+import struct Foundation.UUID
+
 public enum RopeError: Error {
     case connectionFailed(message: String)
     case emptyQuery
@@ -92,6 +95,7 @@ public final class Rope {
             let result = self.connectionQueue.sync {
                 return PQexec(self.conn, statement)
             }
+            
             guard let res = result else {
                 throw failWithError()
             }
@@ -152,5 +156,3 @@ public final class Rope {
         return RopeError.connectionFailed(message: message)
     }
 }
-import Dispatch
-import struct Foundation.UUID
