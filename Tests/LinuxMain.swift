@@ -28,8 +28,7 @@ extension RopeQueryTests {
     ("testReadmeExample", testReadmeExample),
     ("testQuerySelectRowStringTypes", testQuerySelectRowStringTypes),
     ("testQuerySelectRowNumericTypes", testQuerySelectRowNumericTypes),
-    ("testQuerySelectRowDateTypes", testQuerySelectRowDateTypes),
-    ("testPreparedStatement", testPreparedStatement),
+    ("testQuerySelectRowDateTypes", testQuerySelectRowDateTypes)
   ]
 }
 
