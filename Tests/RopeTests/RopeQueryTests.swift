@@ -222,49 +222,48 @@ final class RopeQueryTests: XCTestCase {
 
     func testStatementWithParams() {
         // Set up
-        _ = try! conn!.query("CREATE TEMPORARY TABLE library(id integer PRIMARY KEY, title text, properties jsonb)")
-        _ = try! conn!.query("INSERT INTO library(id, title, properties) VALUES(20,'War And Peace','{\"genre\":\"war\"}'),(30,'1984','{\"genre\":\"dystopia\"}'),(40,'Fahrenheit 951','{\"genre\":\"scifi\"}')")
+        guard let _ = try? conn?.query("CREATE TEMPORARY TABLE library(id integer PRIMARY KEY, title text, properties jsonb)"),
+            let _ = try? conn?.query("INSERT INTO library(id, title, properties) VALUES(20,'War And Peace','{\"genre\":\"war\"}'),(30,'1984','{\"genre\":\"dystopia\"}'),(40,'Fahrenheit 951','{\"genre\":\"scifi\"}')")
+        else {
+            XCTFail("res should not be nil"); return
+        }
 
         // Test it out
-        let result = try? conn!.query(statement: "SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"])
+        guard let result = try? conn?.query(statement: "SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"]) else {
+            XCTFail("res should not be nil"); return
+        }
+
         let id = result?.rows().first?["id"] as? Int
         XCTAssertEqual(id, 30)
     }
 
     func testSQLInjection() {
         let seedStatement = "CREATE TEMPORARY TABLE users(id SERIAL PRIMARY KEY, name text); INSERT INTO users(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel')"
-        _ = try! conn!.query(seedStatement)
-
         let maliciousInput = "lol'; INSERT INTO users(name) VALUES ('Black hat hacker') --"
-        _ = try? conn!.query("SELECT * FROM users WHERE name = '\(maliciousInput)'")
+
+        guard let _ = try? conn?.query(seedStatement),
+            let _ = try? conn?.query("SELECT * FROM users WHERE name = '\(maliciousInput)'") else {
+            XCTFail("res should not be nil"); return
+        }
 
         func getLatestUserName() -> String? {
-            let users = try! conn!.query("SELECT * FROM users")
-            let latestUser = users.rows().last?["name"] as? String
+            guard let users = try? conn?.query("SELECT * FROM users") else {
+                return nil
+            }
+            let latestUser = users?.rows().last?["name"] as? String
             return latestUser
         }
 
         XCTAssertEqual(getLatestUserName(), "Black hat hacker") // Injected!
-        // Reset and try again
-        _ = try! conn!.query("DISCARD TEMPORARY")
-        _ = try! conn!.query(seedStatement)
 
-        _ = try? conn!.query(statement: "SELECT * FROM users WHERE name = $1", params: [maliciousInput])
+        // Reset and try again
+        guard let _ = try? conn?.query("DISCARD TEMPORARY"),
+            let _ = try? conn?.query(seedStatement),
+            let _ = try? conn?.query(statement: "SELECT * FROM users WHERE name = $1", params: [maliciousInput]) else {
+            XCTFail("res should not be nil"); return
+        }
 
         XCTAssertNotEqual(getLatestUserName(), "Black hat hacker")
-    }
-
-    func testPreparedStatement() {
-        // Set up
-        _ = try! conn!.query("CREATE TEMPORARY TABLE prepared_statement_table(id integer PRIMARY KEY, title text)")
-        _ = try! conn!.query("INSERT INTO prepared_statement_table(id, title) VALUES(20,'War And Peace'),(30,'1984'),(40,'Fahrenheit 951')")
-        // Prepare it baby!
-        _ = try! conn!.query("PREPARE my_special_query(text) AS SELECT id FROM prepared_statement_table WHERE title = $1")
-
-        // Test it out
-        let result = try? conn!.executePreparedStatement(named: "my_special_query", params: "1984")
-        let id = result?.rows().first?["id"] as? Int
-        XCTAssertEqual(id, 30)
     }
 
     /// helper function which tests the connection and
