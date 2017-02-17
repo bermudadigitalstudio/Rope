@@ -220,6 +220,17 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertNil(idx)
     }
 
+    func testStatementWithParams() {
+        // Set up
+        _ = try! conn!.query("CREATE TEMPORARY TABLE library(id integer PRIMARY KEY, title text, properties jsonb)")
+        _ = try! conn!.query("INSERT INTO library(id, title, properties) VALUES(20,'War And Peace','{\"genre\":\"war\"}'),(30,'1984','{\"genre\":\"dystopia\"}'),(40,'Fahrenheit 951','{\"genre\":\"scifi\"}')")
+
+        // Test it out
+        let result = try? conn!.query(statement: "SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"])
+        let id = result?.rows().first?["id"] as? Int
+        XCTAssertEqual(id, 30)
+    }
+
     func testPreparedStatement() {
         // Set up
         _ = try! conn!.query("CREATE TEMPORARY TABLE prepared_statement_table(id integer PRIMARY KEY, title text)")
@@ -231,7 +242,6 @@ final class RopeQueryTests: XCTestCase {
         let result = try? conn!.executePreparedStatement(named: "my_special_query", params: "1984")
         let id = result?.rows().first?["id"] as? Int
         XCTAssertEqual(id, 30)
-
     }
 
     /// helper function which tests the connection and
