@@ -33,7 +33,6 @@ extension RopeQueryTests {
   ]
 }
 
-
 XCTMain([
   testCase(RopeConnectionTests.allTests),
   testCase(RopeQueryJSONTests.allTests),
