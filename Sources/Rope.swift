@@ -86,6 +86,24 @@ public final class Rope {
         return try execQuery(statement: statement, params: params)
     }
 
+    public func executePreparedStatement(named name: String, params: Any...) throws -> RopeResult {
+        return try withLibPQStyleParamValues(params: params) { paramValues in
+            let result = PQexecPrepared(
+                self.conn,
+                name,
+                Int32(params.count),
+                paramValues,
+                nil,    // "The array pointer can be null when there are no binary parameters."
+                nil,    // "If the array pointer is null then all parameters are presumed to be text strings."
+                0       // "Specify zero to obtain results in text format"
+            )
+            guard let res = result else {
+                throw failWithError()
+            }
+            return try validateQueryResultStatus(res)
+        }
+    }
+
     private func execQuery(statement: String, params: [Any]? = nil) throws -> RopeResult {
         if statement.isEmpty {
             throw RopeError.emptyQuery
@@ -103,14 +121,24 @@ public final class Rope {
             return try validateQueryResultStatus(res)
         }
 
+        return try withLibPQStyleParamValues(params: params) { values in
+            let result = self.connectionQueue.sync {
+                return PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0))
+            }
+            guard let res = result else {
+                throw failWithError()
+            }
+
+            return try validateQueryResultStatus(res)
+        }
+    }
+
+    private func withLibPQStyleParamValues<T>(params: [Any], _ closure: (UnsafeMutablePointer<UnsafePointer<Int8>?>) throws -> T) rethrows -> T {
         let paramsCount = params.count
         let values = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: paramsCount)
-
         defer {
-            values.deinitialize(count: paramsCount)
             values.deallocate(capacity: paramsCount)
         }
-
         var tempValues = [Array<UInt8>]()
         for (idx, value) in params.enumerated() {
 
@@ -119,14 +147,7 @@ public final class Rope {
             tempValues.append(Array<UInt8>(s) + [0])
             values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
         }
-        let result = self.connectionQueue.sync {
-            return PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0))
-        }
-        guard let res = result else {
-            throw failWithError()
-        }
-
-        return try validateQueryResultStatus(res)
+        return try closure(values)
     }
 
     func validateQueryResultStatus(_ res: OpaquePointer) throws -> RopeResult {
