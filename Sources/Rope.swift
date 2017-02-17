@@ -51,8 +51,7 @@ public final class Rope {
     /// connect to database using RopeCredentials struct
     public static func connect(credentials: RopeCredentials) throws -> Rope {
         let rope = Rope()
-        try rope.establishConnection(host: credentials.host, port: credentials.port,
-                                     dbName: credentials.dbName, user: credentials.user, password: credentials.password)
+        try rope.establishConnection(host: credentials.host, port: credentials.port, dbName: credentials.dbName, user: credentials.user, password: credentials.password)
 
         return rope
     }
@@ -97,9 +96,11 @@ public final class Rope {
                 nil,    // "If the array pointer is null then all parameters are presumed to be text strings."
                 0       // "Specify zero to obtain results in text format"
             )
+            
             guard let res = result else {
                 throw failWithError()
             }
+            
             return try validateQueryResultStatus(res)
         }
     }
@@ -125,6 +126,7 @@ public final class Rope {
             let result = self.connectionQueue.sync {
                 return PQexecParams(self.conn, statement, Int32(params.count), nil, values, nil, nil, Int32(0))
             }
+            
             guard let res = result else {
                 throw failWithError()
             }
@@ -136,10 +138,13 @@ public final class Rope {
     private func withLibPQStyleParamValues<T>(params: [Any], _ closure: (UnsafeMutablePointer<UnsafePointer<Int8>?>) throws -> T) rethrows -> T {
         let paramsCount = params.count
         let values = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: paramsCount)
+        
         defer {
             values.deallocate(capacity: paramsCount)
         }
+        
         var tempValues = [Array<UInt8>]()
+        
         for (idx, value) in params.enumerated() {
 
             let s = String(describing: value).utf8
@@ -147,6 +152,7 @@ public final class Rope {
             tempValues.append(Array<UInt8>(s) + [0])
             values[idx] = UnsafePointer<Int8>(OpaquePointer(tempValues.last!))
         }
+        
         return try closure(values)
     }
 
