@@ -238,13 +238,18 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testSQLInjection() {
-        let seedStatement = "CREATE TEMPORARY TABLE users(id SERIAL PRIMARY KEY, name text); INSERT INTO users(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel')"
-        let maliciousInput = "lol'; INSERT INTO users(name) VALUES ('Black hat hacker') --"
+        let seedStatement = "CREATE TEMPORARY TABLE users(id SERIAL PRIMARY KEY, name text); "
 
         guard let _ = try? conn?.query(seedStatement),
-            let _ = try? conn?.query("SELECT * FROM users WHERE name = '\(maliciousInput)'") else {
+            let _ = try? conn?.query("INSERT INTO users(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel')") else {
             XCTFail("res should not be nil"); return
         }
+        
+        let maliciousInput = "lol'; INSERT INTO users(name) VALUES ('Black hat hacker') --"
+
+        XCTAssertThrowsError(
+            try conn?.query("SELECT * FROM users WHERE name = '\(maliciousInput)'")
+        )
 
         func getLatestUserName() -> String? {
             guard let users = try? conn?.query("SELECT * FROM users") else {
@@ -254,7 +259,7 @@ final class RopeQueryTests: XCTestCase {
             return latestUser
         }
 
-        XCTAssertEqual(getLatestUserName(), "Black hat hacker") // Injected!
+        XCTAssertNotEqual(getLatestUserName(), "Black hat hacker")
 
         // Reset and try again
         guard let _ = try? conn?.query("DISCARD TEMPORARY"),
