@@ -95,7 +95,7 @@ public final class Rope {
             let result = self.connectionQueue.sync {
                 return PQexec(self.conn, statement)
             }
-            
+
             guard let res = result else {
                 throw failWithError()
             }
