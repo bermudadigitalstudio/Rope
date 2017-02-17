@@ -231,6 +231,29 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertEqual(id, 30)
     }
 
+    func testSQLInjection() {
+        let seedStatement = "CREATE TEMPORARY TABLE users(id SERIAL PRIMARY KEY, name text); INSERT INTO users(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel')"
+        _ = try! conn!.query(seedStatement)
+
+        let maliciousInput = "lol'; INSERT INTO users(name) VALUES ('Black hat hacker') --"
+        _ = try? conn!.query("SELECT * FROM users WHERE name = '\(maliciousInput)'")
+
+        func getLatestUserName() -> String? {
+            let users = try! conn!.query("SELECT * FROM users")
+            let latestUser = users.rows().last?["name"] as? String
+            return latestUser
+        }
+
+        XCTAssertEqual(getLatestUserName(), "Black hat hacker") // Injected!
+        // Reset and try again
+        _ = try! conn!.query("DISCARD TEMPORARY")
+        _ = try! conn!.query(seedStatement)
+
+        _ = try? conn!.query(statement: "SELECT * FROM users WHERE name = $1", params: [maliciousInput])
+
+        XCTAssertNotEqual(getLatestUserName(), "Black hat hacker")
+    }
+
     func testPreparedStatement() {
         // Set up
         _ = try! conn!.query("CREATE TEMPORARY TABLE prepared_statement_table(id integer PRIMARY KEY, title text)")
