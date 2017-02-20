@@ -11,8 +11,8 @@ struct TestCredentials {
         return RopeCredentials(
             host: argHost ?? envHost ?? "localhost",
             port: 5432,
-            dbName: "johanneserhardt",
-            user: "johanneserhardt",
+            dbName: "postgres",
+            user: "postgres",
             password: ""
         )
     }
