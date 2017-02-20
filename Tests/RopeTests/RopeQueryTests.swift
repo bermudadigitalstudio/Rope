@@ -229,7 +229,7 @@ final class RopeQueryTests: XCTestCase {
         }
 
         // Test it out
-        guard let result = try? conn?.query(statement: "SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"]) else {
+        guard let result = try? conn?.query("SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"]) else {
             XCTFail("res should not be nil"); return
         }
 
@@ -264,7 +264,7 @@ final class RopeQueryTests: XCTestCase {
         // Reset and try again
         guard let _ = try? conn?.query("DISCARD TEMPORARY"),
             let _ = try? conn?.query(seedStatement),
-            let _ = try? conn?.query(statement: "SELECT * FROM users WHERE name = $1", params: [maliciousInput]) else {
+            let _ = try? conn?.query("SELECT * FROM users WHERE name = $1", params: [maliciousInput]) else {
             XCTFail("res should not be nil"); return
         }
 
