@@ -282,6 +282,22 @@ final class RopeQueryTests: XCTestCase {
             try conn?.query(sql)
         )
     }
+    
+    func testStringInterpolation() {
+        guard let _ = try? conn?.query("CREATE TEMPORARY TABLE string_interpolation_test(id SERIAL PRIMARY KEY, name text)"),
+            let _ = try? conn?.query("INSERT INTO string_interpolation_test(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel'),('Rope')") else {
+            XCTFail("res should not be nil"); return
+        }
+        
+        let rope = "Rope"
+    
+        guard let res = try? conn?.query("SELECT * FROM string_interpolation_test WHERE name = '\(rope)'") else {
+            XCTFail("res should not be nil"); return
+        }
+        
+        let name = res?.rows().first?["name"] as? String
+        XCTAssertEqual(name, rope)
+    }
 
     /// helper function which tests the connection and
     /// inserts two rows to test defaults & type conversion
