@@ -6,23 +6,15 @@ struct TestCredentials {
     /// Passes database credentials in the order:
     /// environment variables, build arguments, default values
     static func getCredentials() -> RopeCredentials {
-
+        if let envCredentials = readEnvironment() {
+            return envCredentials
+        } else if let buildArgsCredentials = readArguments() {
+            // maybe the credentials were given as build args
+            return buildArgsCredentials
+        }
+        
         // used if no credentials were set in ENV vars or build args
-        return RopeCredentials(
-            host: argHost ?? envHost ?? "localhost",
-            port: 5432,
-            dbName: "postgres",
-            user: "postgres",
-            password: ""
-        )
-    }
-
-    static var argHost: String? {
-        return processArgs["DATABASE_HOST"]
-    }
-
-    static var envHost: String? {
-        return ProcessInfo.processInfo.environment["DATABASE_HOST"]
+        return RopeCredentials(host: "localhost", port: 5432, dbName: "postgres", user: "postgres", password: "")
     }
 
     static var processArgs: [String:String] {
