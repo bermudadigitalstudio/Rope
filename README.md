@@ -39,6 +39,12 @@ guard let res = try? db.query("SELECT id, my_text FROM my_table") else {
 	return
 }
 
+// execute statements with params   
+guard let res = try? db.query("SELECT id, my_text FROM my_table WHERE id=$1", params: [6483]) else {
+    print("Could not fetch id & my_text from database")
+    return
+}
+
 // turn result into 2-dimensional array
 if let rows = res?.rows() {
     for row in rows {
