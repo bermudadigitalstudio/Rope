@@ -88,6 +88,12 @@ public final class Rope {
         if statement.isEmpty {
             throw RopeError.emptyQuery
         }
+        
+        // If the parameters are nil, then we assume that the statement has been assembled using String interpolation.
+        // In this case, we want to make sure that the paramters are passed as a params array and the statement contains $1, $2, etc.
+        if params == nil && statement.contains("WHERE") {
+            throw RopeError.fatalError(message: "Invalid method call.")
+        }
 
         guard let params = params else {
             let result = self.connectionQueue.sync {

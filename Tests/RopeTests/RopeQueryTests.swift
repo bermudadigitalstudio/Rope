@@ -237,40 +237,6 @@ final class RopeQueryTests: XCTestCase {
         let id = result?.rows().first?["id"] as? Int
         XCTAssertEqual(id, 30)
     }
-
-    func testSQLInjection() {
-        let seedStatement = "CREATE TEMPORARY TABLE users(id SERIAL PRIMARY KEY, name text); "
-
-        guard let _ = try? conn?.query(seedStatement),
-            let _ = try? conn?.query("INSERT INTO users(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel')") else {
-            XCTFail("res should not be nil"); return
-        }
-        
-        let maliciousInput = "lol'; INSERT INTO users(name) VALUES ('Black hat hacker') --"
-
-        XCTAssertThrowsError(
-            try conn?.query("SELECT * FROM users WHERE name = '\(maliciousInput)'")
-        )
-
-        func getLatestUserName() -> String? {
-            guard let users = try? conn?.query("SELECT * FROM users") else {
-                return nil
-            }
-            let latestUser = users?.rows().last?["name"] as? String
-            return latestUser
-        }
-
-        XCTAssertNotEqual(getLatestUserName(), "Black hat hacker")
-
-        // Reset and try again
-        guard let _ = try? conn?.query("DISCARD TEMPORARY"),
-            let _ = try? conn?.query(seedStatement),
-            let _ = try? conn?.query("SELECT * FROM users WHERE name = $1", params: [maliciousInput]) else {
-            XCTFail("res should not be nil"); return
-        }
-
-        XCTAssertNotEqual(getLatestUserName(), "Black hat hacker")
-    }
     
     func testMultiQueries() {
         let sql = String(
@@ -281,22 +247,6 @@ final class RopeQueryTests: XCTestCase {
         XCTAssertThrowsError(
             try conn?.query(sql)
         )
-    }
-    
-    func testStringInterpolation() {
-        guard let _ = try? conn?.query("CREATE TEMPORARY TABLE string_interpolation_test(id SERIAL PRIMARY KEY, name text)"),
-            let _ = try? conn?.query("INSERT INTO string_interpolation_test(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel'),('Rope')") else {
-            XCTFail("res should not be nil"); return
-        }
-        
-        let rope = "Rope"
-    
-        guard let res = try? conn?.query("SELECT * FROM string_interpolation_test WHERE name = '\(rope)'") else {
-            XCTFail("res should not be nil"); return
-        }
-        
-        let name = res?.rows().first?["name"] as? String
-        XCTAssertEqual(name, rope)
     }
 
     /// helper function which tests the connection and
