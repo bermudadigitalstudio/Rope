@@ -32,8 +32,17 @@ extension RopeQueryTests {
   ]
 }
 
+extension RopeInjectionTests {
+  static var allTests = [
+    ("testSQLInjection", testSQLInjection),
+    ("testInjectionUsingStringInterpolation", testInjectionUsingStringInterpolation),
+    ("testStringInterpolation", testStringInterpolation),
+  ]
+}
+
 XCTMain([
   testCase(RopeConnectionTests.allTests),
   testCase(RopeQueryJSONTests.allTests),
   testCase(RopeQueryTests.allTests),
+  testCase(RopeInjectionTests.allTests)
 ])
