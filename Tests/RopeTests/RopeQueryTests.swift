@@ -234,8 +234,8 @@ final class RopeQueryTests: XCTestCase {
         }
 
         // Test it out
-        let sql3 = "SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"]
-        guard let result = try? conn?.query(sql3) else {
+        let sql3 = "SELECT id FROM library WHERE properties @> $1"
+        guard let result = try? conn?.query(sql3, params: ["{\"genre\":\"dystopia\"}"]) else {
             XCTFail("res should not be nil"); return
         }
 

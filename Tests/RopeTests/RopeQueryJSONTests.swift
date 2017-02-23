@@ -5,7 +5,7 @@ final class RopeQueryJSONTests: XCTestCase {
     let creds = TestCredentials.getCredentials()
     var conn: Rope? // auto-tested optional db connection
 
-    let insertQuery = "INSERT INTO json (json) VALUES "+
+    let insertQuery = "INSERT INTO json (json) VALUES " +
                       "('{\"due_in_seconds\":0,\"method\":\"POST\",\"headers\":{},\"url\":\"http://localhost\"}') " +
                       "RETURNING id;"
 
