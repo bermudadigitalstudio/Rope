@@ -8,14 +8,20 @@ import XCTest
 extension RopeConnectionTests {
   static var allTests = [
     ("testConnectWithParams", testConnectWithParams),
-    ("testConnectWithStruct", testConnectWithStruct),
+    ("testConnectWithStruct", testConnectWithStruct)
+  ]
+}
+
+extension RopeInjectionTests {
+  static var allTests = [
+    ("testSQLInjection", testSQLInjection)
   ]
 }
 
 extension RopeQueryJSONTests {
   static var allTests = [
     ("testQueryInsertStatement", testQueryInsertStatement),
-    ("testQuerySelectStatement", testQuerySelectStatement),
+    ("testQuerySelectStatement", testQuerySelectStatement)
   ]
 }
 
@@ -28,21 +34,15 @@ extension RopeQueryTests {
     ("testReadmeExample", testReadmeExample),
     ("testQuerySelectRowStringTypes", testQuerySelectRowStringTypes),
     ("testQuerySelectRowNumericTypes", testQuerySelectRowNumericTypes),
-    ("testQuerySelectRowDateTypes", testQuerySelectRowDateTypes)
-  ]
-}
-
-extension RopeInjectionTests {
-  static var allTests = [
-    ("testSQLInjection", testSQLInjection),
-    ("testInjectionUsingStringInterpolation", testInjectionUsingStringInterpolation),
-    ("testStringInterpolation", testStringInterpolation),
+    ("testQuerySelectRowDateTypes", testQuerySelectRowDateTypes),
+    ("testStatementWithParams", testStatementWithParams),
+    ("testMultiQueries", testMultiQueries)
   ]
 }
 
 XCTMain([
   testCase(RopeConnectionTests.allTests),
+  testCase(RopeInjectionTests.allTests),
   testCase(RopeQueryJSONTests.allTests),
-  testCase(RopeQueryTests.allTests),
-  testCase(RopeInjectionTests.allTests)
+  testCase(RopeQueryTests.allTests)
 ])

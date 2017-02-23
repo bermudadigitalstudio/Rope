@@ -9,30 +9,16 @@
 # -o pipefail: set exit status of shell script to last nonzero exit code, if any were nonzero.
 set -eo pipefail
 
-POSTGRES_CONTAINER_NAME=rope_tests_postgres
-TEST_NETWORK_NAME=rope_tests
-
 # Clean up everything we've made when shell exits
 function finish {
   set +e # Do not exit when a command fails
-  docker stop $POSTGRES_CONTAINER_NAME
-  docker network rm $TEST_NETWORK_NAME
+  docker stop rope_tests_postgres
 }
 trap finish EXIT # Register finish function
 
-# Create an isolated bridge network so that we can set a net alias (default bridge network doesn't allow this)
-docker network create rope_tests
-
-docker run -d `# Run it in background` \
-  --rm `# Delete container when it stops` \
-  --net $TEST_NETWORK_NAME `# Connect to test network` \
-  --net-alias postgres `# Expose it on network behind hostname "postgres"` \
-  --name $POSTGRES_CONTAINER_NAME `# Give it a specific name we can refer to later` \
-  postgres:alpine # Specify the image – alpine is nice and tiny
+docker run  --name rope_tests_postgres --rm -d postgres:alpine
 
 docker build -t rope . # Build our image and name it 'rope'
 sleep 5 # Wait for PG to come up
-docker run --rm \
-  --net $TEST_NETWORK_NAME \
-  --env DATABASE_HOST=postgres \
-  rope
+docker run --rm --link rope_tests_postgres:localhost rope \
+  || (set +x; echo -e "\033[0;31mTests exited with non-zero exit code\033[0m"; tput bel; exit 1)
