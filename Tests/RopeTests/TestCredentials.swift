@@ -12,7 +12,7 @@ struct TestCredentials {
             // maybe the credentials were given as build args
             return buildArgsCredentials
         }
-        
+
         // used if no credentials were set in ENV vars or build args
         return RopeCredentials(host: "localhost", port: 5432, dbName: "postgres", user: "postgres", password: "")
     }

@@ -4,7 +4,7 @@ import Foundation
 public extension String {
     init(_ lines: String...) {
         self = ""
-        
+
         for str in lines {
             self += "\(str) "
         }

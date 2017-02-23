@@ -5,7 +5,9 @@ final class RopeQueryJSONTests: XCTestCase {
     let creds = TestCredentials.getCredentials()
     var conn: Rope? // auto-tested optional db connection
 
-    let insertQuery = "INSERT INTO json (json) VALUES ('{\"due_in_seconds\":0,\"method\":\"POST\",\"headers\":{},\"url\":\"http://localhost\"}') RETURNING id;"
+    let insertQuery = "INSERT INTO json (json) VALUES "+
+                      "('{\"due_in_seconds\":0,\"method\":\"POST\",\"headers\":{},\"url\":\"http://localhost\"}') " +
+                      "RETURNING id;"
 
     override func setUp() {
         super.setUp()
@@ -20,7 +22,8 @@ final class RopeQueryJSONTests: XCTestCase {
         XCTAssertNotNil(dropRes)
 
         // create a table with different types as test, payload can be nil
-        guard let createRes = try? conn?.query("CREATE TABLE IF NOT EXISTS json (id SERIAL PRIMARY KEY,  json JSONB);") else {
+        let sql = "CREATE TABLE IF NOT EXISTS json (id SERIAL PRIMARY KEY,  json JSONB);"
+        guard let createRes = try? conn?.query(sql) else {
             XCTFail("res should not be nil"); return
         }
         XCTAssertNotNil(createRes)

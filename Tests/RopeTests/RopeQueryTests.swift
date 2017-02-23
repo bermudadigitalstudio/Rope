@@ -31,7 +31,7 @@ final class RopeQueryTests: XCTestCase {
             "my_date DATE default (now() at time zone 'utc'),",
             "my_ts TIMESTAMP default (now() at time zone 'utc'));"
         )
-        
+
         guard let _ = try? db.query(sql) else {
             XCTFail("_ should not be nil")
             return
@@ -222,28 +222,33 @@ final class RopeQueryTests: XCTestCase {
     }
 
     func testStatementWithParams() {
+        let sql = "CREATE TEMPORARY TABLE library(id integer PRIMARY KEY, title text, properties jsonb)"
+        let sql2 = "INSERT INTO library(id, title, properties) VALUES(20,'War And Peace'," +
+                  "'{\"genre\":\"war\"}'),(30,'1984','{\"genre\":\"dystopia\"}'), " +
+                  "(40,'Fahrenheit 951','{\"genre\":\"scifi\"}')"
         // Set up
-        guard let _ = try? conn?.query("CREATE TEMPORARY TABLE library(id integer PRIMARY KEY, title text, properties jsonb)"),
-            let _ = try? conn?.query("INSERT INTO library(id, title, properties) VALUES(20,'War And Peace','{\"genre\":\"war\"}'),(30,'1984','{\"genre\":\"dystopia\"}'),(40,'Fahrenheit 951','{\"genre\":\"scifi\"}')")
+        guard let _ = try? conn?.query(sql),
+            let _ = try? conn?.query(sql2)
         else {
             XCTFail("res should not be nil"); return
         }
 
         // Test it out
-        guard let result = try? conn?.query("SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"]) else {
+        let sql3 = "SELECT id FROM library WHERE properties @> $1", params: ["{\"genre\":\"dystopia\"}"]
+        guard let result = try? conn?.query(sql3) else {
             XCTFail("res should not be nil"); return
         }
 
         let id = result?.rows().first?["id"] as? Int
         XCTAssertEqual(id, 30)
     }
-    
+
     func testMultiQueries() {
         let sql = String(
             "CREATE TEMPORARY TABLE multi_queries_test(id SERIAL PRIMARY KEY, name text);",
             "INSERT INTO multi_queries_test(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel');"
         )
-        
+
         let res = try? conn?.query(sql)
         let rows = res??.rows()
         XCTAssertNotNil(rows)
