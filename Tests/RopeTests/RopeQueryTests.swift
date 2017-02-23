@@ -241,12 +241,12 @@ final class RopeQueryTests: XCTestCase {
     func testMultiQueries() {
         let sql = String(
             "CREATE TEMPORARY TABLE multi_queries_test(id SERIAL PRIMARY KEY, name text);",
-            "INSERT INTO users(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel');"
+            "INSERT INTO multi_queries_test(name) VALUES ('Sebastian'),('Thomas'),('Johannes'),('Gabriel');"
         )
         
-        XCTAssertThrowsError(
-            try conn?.query(sql)
-        )
+        let res = try? conn?.query(sql)
+        let rows = res??.rows()
+        XCTAssertNotNil(rows)
     }
 
     /// helper function which tests the connection and

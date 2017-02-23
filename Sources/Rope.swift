@@ -97,7 +97,7 @@ public final class Rope {
 
         guard let params = params else {
             let result = self.connectionQueue.sync {
-                return PQexecParams(self.conn, statement, 0, nil, nil, nil, nil, Int32(0))
+                return PQexec(self.conn, statement)
             }
 
             guard let res = result else {
