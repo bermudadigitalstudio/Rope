@@ -46,6 +46,13 @@ guard let res = try? db.query("SELECT * FROM my_table WHERE my_text=$1", params:
     return
 }
 
+// handle errors with a do/catch 
+do {
+    let res = try db.query("SELECT id, my_text FROM my_table")
+} catch {
+    // Error handling
+}
+
 // turn result into 2-dimensional array
 if let rows = res?.rows() {
     for row in rows {
