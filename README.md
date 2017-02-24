@@ -27,8 +27,9 @@ guard let db = try? Rope.connect(credentials: creds) else {
 }
 
 // run INSERT query, it returns nil on a syntax or connection error
+// the insert is SQL-injection safe due to the use of dollar params!
 let text = "Hello World"
-guard let _ = try? db.query("INSERT INTO my_table (my_text) VALUES('\(text)')')") else {
+guard let _ = try? db.query("INSERT INTO my_table (my_text) VALUES($1)')", params: [text]) else {
 	print("Could not insert \(text) into database");
 	return
 }
@@ -39,8 +40,8 @@ guard let res = try? db.query("SELECT id, my_text FROM my_table") else {
 	return
 }
 
-// execute statements with params   
-guard let res = try? db.query("SELECT id, my_text FROM my_table WHERE id=$1", params: [6483]) else {
+// execute statements with params (SQL-injection safe)  
+guard let res = try? db.query("SELECT * FROM my_table WHERE my_text=$1", params: ["Hello World"]) else {
     print("Could not fetch id & my_text from database")
     return
 }
