@@ -1,8 +1,4 @@
-#if os(Linux)
-    @_exported import RopeLinux
-#else
-    @_exported import RopeMacOS
-#endif
+import RopeLibpq
 
 import Dispatch
 import struct Foundation.UUID
