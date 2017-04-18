@@ -6,6 +6,7 @@ It uses the thread-safe, highly performant `libpq` library.
 [![Language Swift 3](https://img.shields.io/badge/Language-Swift%203-orange.svg)](https://swift.org) ![Platforms](https://img.shields.io/badge/Platforms-Docker%20%7C%20Linux%20%7C%20macOS-blue.svg) [![CircleCI](https://circleci.com/gh/bermudadigitalstudio/Rope/tree/master.svg?style=shield)](https://circleci.com/gh/bermudadigitalstudio/Rope)
 
 <br>
+
 ## How to Use
 
 Rope is so simple, you just need to learn 3 methods:
@@ -63,6 +64,7 @@ if let rows = res?.rows() {
 ```
 
 <br>
+
 ## Postgres Types to Swift Conversion
 
 * `serial`, `bigserial`, `smallint`, `integer`, and `bigint` are returned as `Int`
@@ -74,6 +76,7 @@ if let rows = res?.rows() {
 
 
 <br>
+
 ## Running Unit Tests
 
 Rope’s unit tests require a running Postgres 9.x database and you can either provide the database credentials via environment variables, or via CLI arguments or use the built-in default values.
@@ -111,11 +114,13 @@ swift build DATABASE_HOST=mydatabase_host DATABASE_PORT=mydatabase_port DATABASE
 To run tests simple type `swift test` in your CLI.
 
 <br>
+
 ## Source Code Linting
 
 The source code is formatted using [SwiftLint](https://github.com/realm/SwiftLint) and all commits & PRs need to be without any SwiftLint warnings or errors.
 
 <br>
+
 ## Contributing
 
 Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)), Johannes Erhardt ([@johanneserhardt](https://github.com/johanneserhardt)), Sebastian Kreutzberger ([@skreutzberger](https://github.com/skreutzberger)).
@@ -123,6 +128,7 @@ Rope is maintained by Thomas Catterall ([@swizzlr](https://github.com/swizzlr)),
 Contributions are more than welcomed. You can either work on existing Github issues or discuss with us your ideas in a new Github issue. Thanks 🙌
 
 <br><br>
+
 ## License
 
 Rope is released under the [Apache 2.0 License](https://github.com/bermudadigitalstudio/rope/blob/master/LICENSE.txt).
