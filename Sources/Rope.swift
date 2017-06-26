@@ -83,6 +83,11 @@ public final class Rope {
     }
 
     private func execQuery(statement: String, params: [Any]? = nil) throws -> RopeResult {
+
+        if !self.connected {
+            self.reconnect()
+        }
+
         if statement.isEmpty {
             throw RopeError.emptyQuery
         }
@@ -145,6 +150,12 @@ public final class Rope {
 
         PQfinish(conn)
         conn = nil
+    }
+
+    private func reconnect() {
+        if let conn = conn {            
+            PQreset(conn)
+        }
     }
 
     private func failWithError(_ conn: OpaquePointer? = nil) -> Error {
