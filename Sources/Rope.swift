@@ -8,6 +8,7 @@ public enum RopeError: Error {
     case emptyQuery
     case invalidQuery(message: String)
     case fatalError(message: String)
+    case reconnectFailed
 }
 
 /// connection details to database
@@ -85,7 +86,7 @@ public final class Rope {
     private func execQuery(statement: String, params: [Any]? = nil) throws -> RopeResult {
 
         if !self.connected {
-            self.reconnect()
+            try self.reconnect()
         }
 
         if statement.isEmpty {
@@ -152,9 +153,19 @@ public final class Rope {
         conn = nil
     }
 
-    private func reconnect() {
+    private func reconnect() throws {
         if let conn = conn {            
             PQreset(conn)
+            let resetStatus = PQresetPoll(conn)
+            switch resetStatus {
+            case PGRES_POLLING_FAILED:
+                throw RopeError.reconnectFailed
+            case PGRES_POLLING_OK:
+                print("Reconnection succeed")
+            default:
+                print("Unknown Status")
+                break
+            }
         }
     }
 
