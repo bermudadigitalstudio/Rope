@@ -4,3 +4,5 @@ Packages
 *.xcodeproj
 .swift-version
 *.sublime*
+Package.pins
+Package.resolved

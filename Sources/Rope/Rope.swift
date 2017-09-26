@@ -154,7 +154,7 @@ public final class Rope {
     }
 
     private func reconnect() throws {
-        if let conn = conn {            
+        if let conn = conn {
             PQreset(conn)
             let resetStatus = PQresetPoll(conn)
             switch resetStatus {
