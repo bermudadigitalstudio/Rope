@@ -284,11 +284,11 @@ final class RopeQueryTests: XCTestCase {
 
 // Helper methods
 
-fileprivate let formatter = DateFormatter()
+private let formatter = DateFormatter()
 
 /// returns a formatted date string of a given date
 /// on default it uses the abbreviated timezone "UTC"
-fileprivate func formatDate(_ date: Date, format: String, timezone: String = "UTC") -> String {
+private func formatDate(_ date: Date, format: String, timezone: String = "UTC") -> String {
     let formatter = DateFormatter()
 
     if !timezone.isEmpty {
