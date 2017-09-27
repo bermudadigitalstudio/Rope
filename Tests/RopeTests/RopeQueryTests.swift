@@ -29,7 +29,8 @@ final class RopeQueryTests: XCTestCase {
             "my_varchar VARCHAR(3) default 'abc', my_char CHAR(1) default 'x', my_null_text TEXT default null,",
             "my_real REAL default 123.456, my_double DOUBLE PRECISION default 456.789,",
             "my_date DATE default (now() at time zone 'utc'),",
-            "my_ts TIMESTAMP default (now() at time zone 'utc'));"
+            "my_ts TIMESTAMP default (now() at time zone 'utc'),",
+            "my_numeric numeric(18,6) default 897.456456);"
         )
 
         guard let _ = try? db.query(sql) else {
@@ -149,6 +150,9 @@ final class RopeQueryTests: XCTestCase {
         // a non-existing column is nil
         let idx = rows[0]["xid"] as? Int
         XCTAssertNil(idx)
+
+        let decimal = rows[0]["my_numeric"] as? Decimal
+        XCTAssertEqual(decimal, Decimal(string: "897.456456", locale: Locale(identifier: "en_US")))
     }
 
     func testQuerySelectRowDateTypes() {

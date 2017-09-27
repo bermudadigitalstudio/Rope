@@ -6,7 +6,7 @@ public enum RopeValueType: Int {
     case unsupported = -1, bool = 16, int64 = 20, int16 = 21,
     int32 = 23, float = 700, double = 701,
     char = 1042, varchar = 1043, text = 25,
-    date = 1082, timestamp = 1114,
+    date = 1082, timestamp = 1114, numeric = 1700,
     json = 3802
 }
 
@@ -71,7 +71,11 @@ public final class RopeResult {
     }
 
     private func convert(value: UnsafeMutablePointer<Int8>, columnIndex: Int32) -> Any? {
-        let oid = PQftype(self.result!, Int32(columnIndex))
+        guard let result = self.result else {
+            return nil
+        }
+
+        let oid = PQftype(result, Int32(columnIndex))
 
         guard let stringValue = String(validatingUTF8: value),
             let type = RopeValueType(rawValue: Int(oid))
@@ -86,6 +90,8 @@ public final class RopeResult {
             return Int(stringValue)
         case .float, .double:
             return Float(stringValue)
+        case .numeric:
+            return Decimal(string: stringValue, locale: Locale(identifier: "en_US"))
         case .text, .char, .varchar:
             return stringValue
         case .json:
