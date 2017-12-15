@@ -7,7 +7,7 @@ public enum RopeError: Error {
     case connectionFailed(message: String)
     case emptyQuery
     case invalidQuery(message: String)
-    case fatalError(message: String)
+    case fatalError(message: String, code: PGErrorCode)
     case reconnectFailed
 }
 
@@ -49,7 +49,7 @@ public final class Rope {
     public static func connect(credentials: RopeCredentials) throws -> Rope {
         let rope = Rope()
         try rope.establishConnection(host: credentials.host, port: credentials.port,
-            dbName: credentials.dbName, user: credentials.user, password: credentials.password)
+                                     dbName: credentials.dbName, user: credentials.user, password: credentials.password)
 
         return rope
     }
@@ -130,14 +130,28 @@ public final class Rope {
 
         return try validateQueryResultStatus(res)
     }
-
+    
     func validateQueryResultStatus(_ res: OpaquePointer) throws -> RopeResult {
         switch PQresultStatus(res) {
         case PGRES_COMMAND_OK, PGRES_TUPLES_OK:
             return RopeResult(res)
         case PGRES_FATAL_ERROR:
-            let message = String(cString: PQresultErrorMessage(res))
-            throw RopeError.fatalError(message: message)
+            let message: String
+            let code: PGErrorCode
+
+            if let rawCodePointer = PQresultErrorField(res, 67) {
+                let rawCode = String(cString: rawCodePointer)
+                code = PGErrorCode(rawValue: rawCode) ?? .unknown
+            } else {
+                code = .unknown
+            }
+
+            if let errorMessage = PQresultErrorMessage(res) {
+                message = String(cString: errorMessage)
+            } else {
+                message = "Unknown"
+            }
+            throw RopeError.fatalError(message: message, code: code)
         default:
             let message = String(cString: PQresultErrorMessage(res))
             throw RopeError.invalidQuery(message: message)
