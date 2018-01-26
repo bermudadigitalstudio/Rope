@@ -6,7 +6,7 @@ RUN apt-get update -q &&\
 
 WORKDIR /code
 
-COPY Package@swift-4.0.swift /code/Package.swift
+COPY Package.swift /code/Package.swift
 RUN swift package fetch
 
 # Assuming that tests change less than code, so put Tests before Sources copy
