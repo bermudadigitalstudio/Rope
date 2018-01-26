@@ -3,11 +3,27 @@ import RopeLibpq
 import Foundation
 
 public enum RopeValueType: Int {
-    case unsupported = -1, bool = 16, int64 = 20, int16 = 21,
-    int32 = 23, float = 700, double = 701,
-    char = 1042, varchar = 1043, text = 25,
-    date = 1082, timestamp = 1114, numeric = 1700,
-    json = 3802
+    case unsupported = -1
+
+    case bool = 16
+
+    case int16 = 21
+    case int32 = 23
+    case int64 = 20
+
+    case float = 700
+    case double = 701
+
+    case char = 1042
+    case varchar = 1043
+    case text = 25
+
+    case date = 1082
+    case timestamp = 1114
+
+    case numeric = 1700
+
+    case json = 3802
 }
 
 public final class RopeResult {
@@ -110,7 +126,7 @@ public final class RopeResult {
             case .timestamp:
                 return ("yyyy-MM-dd HH:mm:ss.SSS", true)
             default:
-                return ("yyyy-MM-dd", false)
+                return ("yyyy-MM-dd", true)
             }
         }(valueType)
 

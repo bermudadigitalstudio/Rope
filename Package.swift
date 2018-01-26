@@ -1,12 +1,17 @@
-// swift-tools-version:3.1
+// swift-tools-version:4.0
 
 import PackageDescription
 
-var package = Package(
+let package = Package(
     name: "Rope",
+    products: [
+        .library(name: "Rope", targets: ["Rope"])
+    ],
     dependencies: [
-        .Package(url: "https://github.com/bermudadigitalstudio/rope-libpq.git", majorVersion: 0, minor: 2),
+        .package(url: "https://github.com/bermudadigitalstudio/RopeLibpq.git", .upToNextMinor(from: "0.3.0")),        
+    ],
+    targets:[
+        .target(name:"Rope", dependencies: ["RopeLibpq"]),
+        .testTarget(name: "RopeTests", dependencies: ["Rope"])
     ]
 )
-
-// package.dependencies.append(.Package(url: "https://github.com/krzysztofzablocki/Sourcery.git", majorVersion: 0))
