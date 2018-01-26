@@ -206,7 +206,7 @@ final class RopeQueryTests: XCTestCase {
         let myDate = rows[0]["my_date"] as? Date
         XCTAssertNotNil(myDate)
 
-        // check if date (is 0:00) and timestamp are correct are correct
+        // check if date (is 0:00) and timestamp are correct
         let now = Date()
         XCTAssertEqual(
             formatDate(myTS!, format: "YYY-mm-dd HH:mm"), formatDate(now, format: "YYY-mm-dd HH:mm")
