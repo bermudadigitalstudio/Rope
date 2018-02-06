@@ -1,5 +1,5 @@
 # A Dockerfile for running Rope unit tests on a Linux environment.
-FROM lgaches/docker-swift:swift-4
+FROM swift:4
 
 RUN apt-get update -q &&\
     apt-get install -yq  pkg-config libpq-dev

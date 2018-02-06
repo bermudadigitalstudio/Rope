@@ -36,7 +36,7 @@ final class RopeQueryJSONTests: XCTestCase {
     func testQueryInsertStatement() {
         guard let res = try? conn?.query(insertQuery) else {
             XCTFail("res should not be nil"); return
-        }
+        }    
         XCTAssertEqual(res?.rows().count, 1)
 
         guard let row = res?.rows().first else {
