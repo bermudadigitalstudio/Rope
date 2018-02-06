@@ -2,6 +2,12 @@ import RopeLibpq
 
 import Foundation
 
+public enum RopeJsonColumn {
+    case dictionary
+    case string
+    case data
+}
+
 public enum RopeValueType: Int {
     case unsupported = -1
 
@@ -46,24 +52,24 @@ public final class RopeResult {
         try? close()
     }
 
-    public func rows() -> [[String: Any?]] {
+    public func rows(jsonColumn: RopeJsonColumn = .dictionary) -> [[String: Any?]] {
         var rows = [[String: Any?]]()
 
         for rowIndex in 0 ..< rowsCount {
-            let row = self.row(rowIndex)
+            let row = self.row(rowIndex, jsonColumn: jsonColumn)
             rows.append(row)
         }
 
         return rows
     }
 
-    private func row(_ rowIndex: Int) -> [String: Any?] {
+    private func row(_ rowIndex: Int, jsonColumn: RopeJsonColumn) -> [String: Any?] {
         var columns = [String: Any?]()
 
         for columnIndex in 0 ..< columnsCount {
             let idx = Int32(columnIndex)
 
-            guard let column = columnAt(rowIndex: Int32(rowIndex), columnIndex: idx) else {
+            guard let column = columnAt(rowIndex: Int32(rowIndex), columnIndex: idx, jsonColumn: jsonColumn) else {
                 continue
             }
 
@@ -74,7 +80,7 @@ public final class RopeResult {
         return columns
     }
 
-    private func columnAt(rowIndex: Int32, columnIndex: Int32) -> Any? {
+    private func columnAt(rowIndex: Int32, columnIndex: Int32, jsonColumn: RopeJsonColumn) -> Any? {
         guard PQgetisnull(self.result, rowIndex, columnIndex) == 0 else {
             return nil
         }
@@ -83,10 +89,10 @@ public final class RopeResult {
             return nil
         }
 
-        return convert(value: value, columnIndex: columnIndex)
+        return convert(value: value, columnIndex: columnIndex, jsonColumn: jsonColumn)
     }
 
-    private func convert(value: UnsafeMutablePointer<Int8>, columnIndex: Int32) -> Any? {
+    private func convert(value: UnsafeMutablePointer<Int8>, columnIndex: Int32, jsonColumn: RopeJsonColumn) -> Any? {
         guard let result = self.result else {
             return nil
         }
@@ -111,7 +117,14 @@ public final class RopeResult {
         case .text, .char, .varchar:
             return stringValue
         case .json:
-            return convert(jsonValue: stringValue)
+            switch jsonColumn {
+            case .dictionary:
+                return convert(jsonValue: stringValue)
+            case .string:
+                return stringValue
+            case .data:
+                return stringValue.data(using: String.Encoding.utf8)
+            }
         case .date, .timestamp:
             let date = convert(dateValue: stringValue, valueType: type)
             return date
