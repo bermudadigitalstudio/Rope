@@ -26,6 +26,7 @@ public enum RopeValueType: Int {
 
     case date = 1082
     case timestamp = 1114
+    case timestamptz = 1184
 
     case numeric = 1700
 
@@ -125,7 +126,7 @@ public final class RopeResult {
             case .data:
                 return stringValue.data(using: String.Encoding.utf8)
             }
-        case .date, .timestamp:
+        case .date, .timestamp, .timestamptz:
             let date = convert(dateValue: stringValue, valueType: type)
             return date
         default:
@@ -136,6 +137,8 @@ public final class RopeResult {
     private func convert(dateValue: String, valueType: RopeValueType) -> Date? {
         let (format, respectUTC) = { (valueType: RopeValueType) -> (String, Bool) in
             switch valueType {
+            case .timestamptz:
+                return ("yyyy-MM-dd HH:mm:ssZ", false)
             case .timestamp:
                 return ("yyyy-MM-dd HH:mm:ss.SSS", true)
             default:
