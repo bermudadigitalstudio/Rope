@@ -168,7 +168,7 @@ public final class RopeResult {
         }
 
         do {
-            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any]
+            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any]
         } catch {
             return nil
         }

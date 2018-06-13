@@ -17,7 +17,7 @@ struct TestCredentials {
         return RopeCredentials(host: "localhost", port: 5432, dbName: "postgres", user: "postgres", password: "")
     }
 
-    static var processArgs: [String:String] {
+    static var processArgs: [String: String] {
         let argumentKeys = ["DATABASE_HOST", "DATABASE_PORT", "DATABASE_NAME", "DATABASE_USER", "DATABASE_PASSWORD"]
         let creds = ProcessInfo.processInfo.arguments.filter {
             let key = $0.components(separatedBy: "=").first! // get key, value of each argument
