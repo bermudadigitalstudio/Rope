@@ -30,6 +30,7 @@ final class RopeQueryTests: XCTestCase {
             "my_real REAL default 123.456, my_double DOUBLE PRECISION default 456.789,",
             "my_date DATE default (now() at time zone 'utc'),",
             "my_ts TIMESTAMP default (now() at time zone 'utc'),",
+            "my_tsz TIMESTAMP WITH TIME ZONE default (now() at time zone 'utc'),",
             "my_numeric numeric(18,6) default 897.456456);"
         )
 
@@ -201,6 +202,10 @@ final class RopeQueryTests: XCTestCase {
         // timestamp to Date
         let myTS = rows[0]["my_ts"] as? Date
         XCTAssertNotNil(myTS)
+
+        // timestamp with time zone to Date
+        let myTSZ = rows[0]["my_tsz"] as? Date
+        XCTAssertNotNil(myTSZ)
 
         // date to Date
         let myDate = rows[0]["my_date"] as? Date

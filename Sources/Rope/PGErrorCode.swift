@@ -279,6 +279,6 @@ public enum PGErrorCode: String {
     case internalError = "XX000"
     case dataCorrupted = "XX001"
     case indexCorrupted = "XX002"
-    
+
     case unknown
 }

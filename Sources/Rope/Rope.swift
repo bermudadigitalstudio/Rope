@@ -130,7 +130,7 @@ public final class Rope {
 
         return try validateQueryResultStatus(res)
     }
-    
+
     func validateQueryResultStatus(_ res: OpaquePointer) throws -> RopeResult {
         switch PQresultStatus(res) {
         case PGRES_COMMAND_OK, PGRES_TUPLES_OK:

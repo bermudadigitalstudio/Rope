@@ -26,6 +26,7 @@ public enum RopeValueType: Int {
 
     case date = 1082
     case timestamp = 1114
+    case timestamptz = 1184
 
     case numeric = 1700
 
@@ -125,7 +126,7 @@ public final class RopeResult {
             case .data:
                 return stringValue.data(using: String.Encoding.utf8)
             }
-        case .date, .timestamp:
+        case .date, .timestamp, .timestamptz:
             let date = convert(dateValue: stringValue, valueType: type)
             return date
         default:
@@ -134,12 +135,14 @@ public final class RopeResult {
     }
 
     private func convert(dateValue: String, valueType: RopeValueType) -> Date? {
-        let (format, respectUTC) = { (valueType: RopeValueType) -> (String, Bool) in
+        let (formats, respectUTC) = { (valueType: RopeValueType) -> ([String], Bool) in
             switch valueType {
+            case .timestamptz:
+                return (["yyyy-MM-dd HH:mm:ssZ", "yyyy-MM-dd HH:mm:ss.SSSZ"], false)
             case .timestamp:
-                return ("yyyy-MM-dd HH:mm:ss.SSS", true)
+                return (["yyyy-MM-dd HH:mm:ss.SSS"], true)
             default:
-                return ("yyyy-MM-dd", true)
+                return (["yyyy-MM-dd"], true)
             }
         }(valueType)
 
@@ -147,9 +150,16 @@ public final class RopeResult {
         if respectUTC {
             formatter.timeZone = TimeZone(abbreviation: "UTC")
         }
-        formatter.dateFormat = format
 
-        return formatter.date(from: dateValue)
+        for format in formats {
+            formatter.dateFormat = format
+
+            if let date = formatter.date(from: dateValue) {
+                return date
+            }
+        }
+
+        return nil
     }
 
     private func convert(jsonValue: String) -> [String: Any]? {
@@ -158,7 +168,7 @@ public final class RopeResult {
         }
 
         do {
-            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:Any]
+            return try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any]
         } catch {
             return nil
         }
